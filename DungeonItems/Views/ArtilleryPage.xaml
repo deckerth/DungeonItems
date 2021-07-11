@@ -1,0 +1,177 @@
+﻿<Page
+    x:Class="DungeonItems.Views.ArtilleryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DungeonItems.Views"
+    xmlns:telerikGauge="using:Telerik.UI.Xaml.Controls.DataVisualization"    
+    xmlns:converters="using:DungeonItems.ValueConverters"  
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <RelativePanel>
+        <TextBlock x:Name="Name" Text="{x:Bind ViewModel.Name,Mode=OneWay}" FontFamily="Mojang"
+                   FontSize="35"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   RelativePanel.AlignTopWithPanel="True"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   />
+        <TextBox x:Name="NameEditor" Text="{x:Bind ViewModel.Name,Mode=TwoWay}" FontFamily="Mojang" Width="600"
+                   PlaceholderText="Name"
+                   FontSize="35"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}"
+                   RelativePanel.AlignTopWithPanel="True"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   />
+        <Border x:Name="IsUnique" Background="#FFEB5F00" 
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.Below="Name"
+                Margin="0, 10, 0, 0"
+                Visibility="{x:Bind converters:BooleanOperator.OpAndNotToVis(ViewModel.IsUnique, ViewModel.IsInEdit),Mode=OneWay}">
+            <TextBlock Text="EINZIGARTIG" Foreground="Black" FontSize="20" FontWeight="Bold"
+                       />
+        </Border>
+
+        <Border x:Name="IsNotUnique" Background="#FDACACAC" 
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.Below="Name"
+                Margin="0, 10, 0, 0"
+                Visibility="{x:Bind converters:BooleanOperator.OpNotAndNotToVis(ViewModel.IsUnique, ViewModel.IsInEdit),Mode=OneWay}">
+            <TextBlock Text="GEWÖHNLICH" Foreground="Black" FontSize="20" FontWeight="Bold"
+                       />
+        </Border>
+
+        <ToggleSwitch x:Name="IsUniqueCheckbox" OffContent="GEWÖHNLICH" OnContent="EINZIGARTIG"
+                Margin="0, 10, 0, 0"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.Below="NameEditor"
+                IsOn="{x:Bind ViewModel.IsUnique,Mode=TwoWay}"
+                Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}"/>
+
+        <TextBlock x:Name="Description" Text="{x:Bind ViewModel.Description,Mode=OneWay}"
+                   Margin="0, 50, 0, 0" TextWrapping="Wrap" Width="400"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="Name"/>
+
+        <TextBox x:Name="DescriptionEditor" Text="{x:Bind ViewModel.Description,Mode=TwoWay}"
+                   PlaceholderText="Beschreibung"
+                   Margin="0, 10, 0, 0" Width="400" Height="200" TextWrapping="Wrap"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="IsUniqueCheckbox"/>
+
+        <Border x:Name="ItemImageDisplayBorder"
+                BorderBrush="Black"
+                RelativePanel.AlignTopWith="Description"
+                RelativePanel.RightOf="Description"
+                Margin="10, 10, 0, 0"
+                Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}">
+            <Image x:Name="ItemImageDisplay" Width="400" Height="400"/>
+        </Border>
+
+        <Border x:Name="ItemImageEditBorder" BorderBrush="White" BorderThickness="1"
+                RelativePanel.AlignTopWith="DescriptionEditor"
+                RelativePanel.RightOf="DescriptionEditor"
+                Margin="10, 10, 0, 0"
+                Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+            <Image x:Name="ItemImageEdit" Width="200" Height="200"/>
+        </Border>
+
+        <Button Content="Bild wählen"
+                RelativePanel.AlignHorizontalCenterWith="ItemImageEditBorder"
+                RelativePanel.Below="ItemImageEditBorder"
+                Margin="0, 10, 0, 0"
+                Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                Command="{x:Bind ViewModel.ChangeImageCommand,Mode=OneWay}"/>
+
+        <telerikGauge:RadLinearGauge x:Name="ForceGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200"  Height="50"
+                                     Margin="0, 20, 0, 0"
+                                     Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                                     RelativePanel.AlignLeftWithPanel="True"
+                                     RelativePanel.Below="Description"
+                                     >
+            <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Force,Mode=OneWay}" Brush="Red" Thickness="5" Margin="10"
+                                                  />
+        </telerikGauge:RadLinearGauge>
+
+        <TextBlock x:Name="ForceLabel" Text="KRAFT" FontSize="18" FontWeight="Bold" Foreground="Red"
+                   Margin="30, 30, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   RelativePanel.RightOf="ForceGauge"
+                   RelativePanel.Below="Description"/>
+        
+        <Slider x:Name="ForceSlider" Header="KRAFT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Force,Mode=TwoWay}"
+                   Margin="0, 10, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="DescriptionEditor"/>
+
+        <TextBox x:Name="ForceEditor" Text="{x:Bind ViewModel.Force,Mode=TwoWay}"
+                   Margin="30, 30, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.RightOf="ForceSlider"
+                   RelativePanel.AlignVerticalCenterWith="ForceSlider"/>
+
+        <telerikGauge:RadLinearGauge x:Name="SpeedGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
+                                     Margin="0, 20, 0, 0"
+                                     Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                                     RelativePanel.AlignLeftWithPanel="True"
+                                     RelativePanel.Below="ForceGauge">
+            <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Speed,Mode=OneWay}" Brush="Green" Thickness="5" Margin="10"/>
+        </telerikGauge:RadLinearGauge>
+
+        <TextBlock x:Name="SpeedLabel" Text="GESCHWINDIGKEIT" FontSize="18" FontWeight="Bold" Foreground="Green"
+                   Margin="30, 30, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   RelativePanel.RightOf="SpeedGauge"
+                   RelativePanel.Below="ForceGauge"/>
+
+        <Slider x:Name="SpeedSlider" Header="GESCHWINDIGKEIT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Speed,Mode=TwoWay}"
+                   Margin="0, 10, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="ForceSlider"/>
+
+        <TextBox x:Name="SpeedEditor" Text="{x:Bind ViewModel.Speed,Mode=TwoWay}"
+                   Margin="30, 30, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.RightOf="SpeedSlider"
+                   RelativePanel.AlignVerticalCenterWith="SpeedSlider"/>
+
+        <telerikGauge:RadLinearGauge x:Name="AmmoGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
+                                     Margin="0, 20, 0, 0" 
+                                     Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                                     RelativePanel.AlignLeftWithPanel="True"
+                                     RelativePanel.Below="SpeedGauge">
+            <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Ammo,Mode=OneWay}" Brush="Blue" Thickness="5" Margin="10"/>
+        </telerikGauge:RadLinearGauge>
+
+        <TextBlock x:Name="AmmoLabel" Text="MUNITION" FontSize="18" FontWeight="Bold" Foreground="Blue"
+                   Margin="30, 30, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   RelativePanel.RightOf="AmmoGauge"
+                   RelativePanel.Below="SpeedGauge"/>
+
+        <Slider x:Name="AmmoSlider" Header="MUNITION" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
+                   Margin="0, 10, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="SpeedSlider"/>
+
+        <TextBox x:Name="AmmoEditor" Text="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
+                   Margin="30, 30, 0, 0"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   RelativePanel.RightOf="AmmoSlider"
+                   RelativePanel.AlignVerticalCenterWith="AmmoSlider"/>
+
+    </RelativePanel>
+</Page>

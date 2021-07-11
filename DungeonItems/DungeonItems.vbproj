@@ -130,10 +130,36 @@
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Commands\BaseCommand.vb" />
+    <Compile Include="Commands\RelayCommand.vb" />
     <Compile Include="MainPage.xaml.vb">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\Armor.vb" />
+    <Compile Include="Model\Artillery.vb" />
+    <Compile Include="Model\Item.vb" />
+    <Compile Include="Model\ItemFactory.vb" />
+    <Compile Include="Model\Melee.vb" />
+    <Compile Include="Model\Perk.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="Repository\ItemRepository.vb" />
+    <Compile Include="ValueConverters\BooleanOperator.vb" />
+    <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
+    <Compile Include="ValueConverters\ItemTypeToStringConverter.vb" />
+    <Compile Include="ViewModels\ArtilleryViewModel.vb" />
+    <Compile Include="ViewModels\BindableBase.vb" />
+    <Compile Include="ViewModels\ItemsViewModel.vb" />
+    <Compile Include="ViewModels\ItemViewModel.vb" />
+    <Compile Include="ViewModels\PerkViewModel.vb" />
+    <Compile Include="Views\ArtilleryPage.xaml.vb">
+      <DependentUpon>ArtilleryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BlankPage.xaml.vb">
+      <DependentUpon>BlankPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PerkEditDialog.xaml.vb">
+      <DependentUpon>PerkEditDialog.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -158,6 +184,18 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ArtilleryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BlankPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PerkEditDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -194,7 +232,14 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
+    <PackageReference Include="Telerik.UI.for.UniversalWindowsPlatform">
+      <Version>1.0.2.1</Version>
+    </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Design\BlockDiagram.pptx" />
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

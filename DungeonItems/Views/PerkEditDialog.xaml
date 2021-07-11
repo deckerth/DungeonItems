@@ -1,0 +1,27 @@
+﻿<ContentDialog
+    x:Name="PerkEditDialog"
+    x:Class="DungeonItems.Views.PerkEditDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DungeonItems.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Perk"
+    PrimaryButtonText="OK"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <RelativePanel>
+        <TextBox x:Name="Description" Header="Beschreibung"
+                 Width="300"
+                 RelativePanel.AlignLeftWithPanel="True"
+                 RelativePanel.AlignTopWithPanel="True"
+                 Text="{x:Bind Model.Description,Mode=TwoWay}"/>
+        <CheckBox x:Name="IsUnique" Content="Einzigartig"
+                  IsChecked="{x:Bind Model.IsUnique,Mode=TwoWay}"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.Below="Description"/>
+    </RelativePanel>
+</ContentDialog>

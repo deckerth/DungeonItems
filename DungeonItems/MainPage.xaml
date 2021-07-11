@@ -5,10 +5,75 @@
     xmlns:local="using:DungeonItems"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:DungeonItems.ViewModels"
+    xmlns:converters="using:DungeonItems.ValueConverters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Page.Resources>
+        <ResourceDictionary>
+            <converters:ItemTypeToStringConverter x:Key="itemTypeToStringConverter"/>
+            <DataTemplate x:Key="ItemTemplate" x:DataType="vm:ItemViewModel">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="{x:Bind Name,Mode=OneWay}" FontFamily="Mojang"
+                                       FontSize="18" Margin="0, 10, 0, 10"
+                                        />
+                    <TextBlock Grid.Row="1" Text="{x:Bind Type,Converter={StaticResource itemTypeToStringConverter},Mode=OneWay}" FontFamily="Segoe UI Semilight"
+                                       FontSize="14"
+                                       FontWeight="Normal" Margin="0, 0, 0, 10" />
+                </Grid>
+            </DataTemplate>
 
+            <Flyout x:Key="DeleteItemFlyout" x:Name="DeleteItemFlyout">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Gegenstand löschen?" Margin="0, 0, 0, 10"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        <Button x:Name="DoDeleteButton" Content="Ja" Command="{x:Bind ViewModel.DeleteCommand}" Click="DoDeleteButton_Click" />
+                        <Button x:Name="DoNotDeleteButton" Content="Nein" Margin="10, 0, 0, 0" Click="DoNotDeleteButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Flyout>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <CommandBar Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <CommandBar.Content>
+                <TextBlock Text="   Minecraft Dungeon Items" Style="{ThemeResource TitleTextBlockStyle}"/>
+            </CommandBar.Content>
+            <AppBarButton Icon="Home" Command="{x:Bind ViewModel.HomeCommand}"/>
+            <AppBarButton Icon="Add">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Nahkampf" Command="{x:Bind ViewModel.AddMeleeCommand}"/>
+                        <MenuFlyoutItem Text="Fernkampf" Command="{x:Bind ViewModel.AddArtilleryCommand}"/>
+                        <MenuFlyoutItem Text="Rüstung" Command="{x:Bind ViewModel.AddArmorCommand}"/>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <AppBarToggleButton Icon="Edit" IsChecked="{x:Bind ViewModel.IsInEdit, Mode=TwoWay}"/>
+            <AppBarButton Icon="Delete" Flyout="{StaticResource DeleteItemFlyout}" IsEnabled="{x:Bind converters:BooleanOperator.OpNotNull(ViewModel.Selected),Mode=OneWay}"/>
+        </CommandBar>
+        <ListView x:Name="ItemsList" Grid.Row="1" Grid.Column="0"
+                  IsItemClickEnabled="True"
+                  SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
+                  ItemTemplate="{StaticResource ItemTemplate}"/>
+        <Frame x:Name="DetailFrame" Grid.Row="1" Grid.Column="1" Margin="50, 10, 0, 0"/>
     </Grid>
 </Page>

@@ -1,8 +1,12 @@
-﻿''' <summary>
+﻿Imports DungeonItems.ViewModels
+''' <summary>
 ''' Stellt das anwendungsspezifische Verhalten bereit, um die Standardanwendungsklasse zu ergänzen.
 ''' </summary>
 NotInheritable Class App
     Inherits Application
+
+
+    Private ViewModel As New ItemsViewModel
 
     ''' <summary>
     ''' Wird aufgerufen, wenn die Anwendung durch den Endbenutzer normal gestartet wird. Weitere Einstiegspunkte
@@ -34,7 +38,7 @@ NotInheritable Class App
                 ' Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
                 ' und die neue Seite konfigurieren, indem die erforderlichen Informationen als Navigationsparameter
                 ' übergeben werden
-                rootFrame.Navigate(GetType(MainPage), e.Arguments)
+                rootFrame.Navigate(GetType(MainPage), ViewModel)
             End If
 
             ' Sicherstellen, dass das aktuelle Fenster aktiv ist
@@ -60,7 +64,7 @@ NotInheritable Class App
     ''' <param name="e">Details zur Anhalteanforderung.</param>
     Private Sub OnSuspending(sender As Object, e As SuspendingEventArgs) Handles Me.Suspending
         Dim deferral As SuspendingDeferral = e.SuspendingOperation.GetDeferral()
-        ' TODO: Anwendungszustand speichern und alle Hintergrundaktivitäten beenden
+        ViewModel.Save()
         deferral.Complete()
     End Sub
 
