@@ -105,6 +105,7 @@ Namespace Global.DungeonItems.ViewModels
             Dim itemVM = New EnchantmentViewModel(newItem)
             itemVM.Modified = True
             Enchantments.Add(itemVM)
+            FilteredEnchantments.Add(itemVM)
             Selected = itemVM
         End Sub
 
@@ -124,6 +125,7 @@ Namespace Global.DungeonItems.ViewModels
             If Selected IsNot Nothing Then
                 Selected.Delete(Repository)
                 Enchantments.Remove(Selected)
+                FilteredEnchantments.Remove(Selected)
                 Navigate()
             End If
         End Sub

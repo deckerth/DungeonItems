@@ -125,6 +125,7 @@ Namespace Global.DungeonItems.ViewModels
             Dim itemVM = ItemViewModel.Create(newItem)
             itemVM.Modified = True
             Items.Add(itemVM)
+            FilteredItems.Add(itemVM)
             Selected = itemVM
             IsInEdit = True
         End Sub
@@ -133,6 +134,7 @@ Namespace Global.DungeonItems.ViewModels
             If Selected IsNot Nothing Then
                 Selected.Delete(Repository)
                 Items.Remove(Selected)
+                FilteredItems.Remove(Selected)
                 DetailFrame.Navigate(GetType(BlankPage))
             End If
         End Sub
