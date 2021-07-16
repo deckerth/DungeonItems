@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="DungeonItems.Views.EnchantmentPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DungeonItems.Views"
+    xmlns:converters="using:DungeonItems.ValueConverters"  
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <converters:ItemTypeToStringConverter x:Key="itemTypeToStringConverter"/>
+        </ResourceDictionary>
+    </Page.Resources>
+
+
+    <RelativePanel>
+
+        <TextBox x:Name="NameEditor" Text="{x:Bind ViewModel.Name,Mode=TwoWay}" FontFamily="Mojang" Width="600"
+                   PlaceholderText="Name"
+                   FontSize="35"
+                   RelativePanel.AlignTopWithPanel="True"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   />
+
+        <TextBlock x:Name="TypeLabel" Text="Anwendbar für: "
+                   Margin="0, 10, 0, 0"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="NameEditor"/>
+
+        <TextBlock x:Name="Type" Text="{x:Bind ViewModel.Type,Converter={StaticResource itemTypeToStringConverter},Mode=OneWay}"
+                   Margin="5, 10, 0, 0"
+                   RelativePanel.RightOf="TypeLabel"
+                   RelativePanel.Below="NameEditor"/>
+
+        <TextBox x:Name="DescriptionEditor" Text="{x:Bind ViewModel.Description,Mode=TwoWay}"
+                   PlaceholderText="Beschreibung"
+                   Margin="0, 10, 0, 0" Width="400" Height="200" TextWrapping="Wrap"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="TypeLabel"/>
+
+        <Border x:Name="ItemImageEditBorder" BorderBrush="White" BorderThickness="1"
+                RelativePanel.AlignTopWith="DescriptionEditor"
+                RelativePanel.RightOf="DescriptionEditor"
+                Margin="10, 10, 0, 0">
+            <Image x:Name="ItemImageEdit" Width="200" Height="200"/>
+        </Border>
+
+        <Button Content="Bild wählen"
+                RelativePanel.AlignHorizontalCenterWith="ItemImageEditBorder"
+                RelativePanel.Below="ItemImageEditBorder"
+                Margin="0, 10, 0, 0"
+                Command="{x:Bind ViewModel.ChangeImageCommand,Mode=OneWay}"/>
+
+    </RelativePanel>
+</Page>

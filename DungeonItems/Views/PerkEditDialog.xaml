@@ -19,9 +19,5 @@
                  RelativePanel.AlignLeftWithPanel="True"
                  RelativePanel.AlignTopWithPanel="True"
                  Text="{x:Bind Model.Description,Mode=TwoWay}"/>
-        <CheckBox x:Name="IsUnique" Content="Einzigartig"
-                  IsChecked="{x:Bind Model.IsUnique,Mode=TwoWay}"
-                  RelativePanel.AlignLeftWithPanel="True"
-                  RelativePanel.Below="Description"/>
     </RelativePanel>
 </ContentDialog>

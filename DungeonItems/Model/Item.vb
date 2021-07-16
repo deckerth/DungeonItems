@@ -1,6 +1,7 @@
 ﻿Namespace Global.DungeonItems.Model
 
     Public MustInherit Class Item
+        Implements IItemType
 
         Public Enum ItemType
             Melee
@@ -62,6 +63,7 @@
         Public Property Image As String
         Public Property mruToken As String
         Public Property Perks As New List(Of Perk)
+        Public Property Enchantments As New List(Of Enchantment)
         Public Property IsUnique As Boolean
         Public Property InstanceCount As Integer
 
@@ -79,6 +81,9 @@
             instanceCounter += 1
         End Sub
 
+        Public Function GetItemType() As ItemType Implements IItemType.GetItemType
+            Return _Type
+        End Function
     End Class
 
 End Namespace

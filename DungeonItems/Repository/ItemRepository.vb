@@ -6,79 +6,104 @@ Namespace Global.DungeonItems.Repository
 
     Public Class ItemRepository
 
+        Private Shared _current As ItemRepository
+        Public Shared ReadOnly Property Current As ItemRepository
+            Get
+                If _current Is Nothing Then
+                    _current = New ItemRepository
+                End If
+                Return _current
+            End Get
+        End Property
+
         Public Property Items As New ObservableCollection(Of Item)
 
         Private ContentLoaded As Boolean
 
+        Public Sub Reload()
+            ContentLoaded = False
+            Load()
+        End Sub
+
         Public Sub Load()
+            If Not ContentLoaded Then
+                Dim localSettings = ApplicationData.Current.LocalSettings
+                Dim itemList = localSettings.CreateContainer("ItemsList", ApplicationDataCreateDisposition.Always)
 
-            Dim localSettings = Windows.Storage.ApplicationData.Current.LocalSettings
-            Dim itemList = localSettings.CreateContainer("ItemsList", Windows.Storage.ApplicationDataCreateDisposition.Always)
+                PerkRepository.Current.Load()
+                EnchantmentRepository.Current.Load()
 
-            Items.Clear()
+                Items.Clear()
 
-            For Each itemWithPerks In itemList.Containers
-                Dim perks As List(Of Perk) = New List(Of Perk)
-                Dim id As Guid
-                Dim type As String = ""
-                Dim name As String = ""
-                Dim descr As String = ""
-                Dim image As String = ""
-                Dim mruToken As String = ""
-                Dim isUnique As Boolean
-                Dim itemComposite As ApplicationDataCompositeValue
+                For Each itemWithPerks In itemList.Containers
+                    Dim perks As New List(Of Perk)
+                    Dim enchantments As New List(Of Enchantment)
+                    Dim id As Guid
+                    Dim type As String = ""
+                    Dim name As String = ""
+                    Dim descr As String = ""
+                    Dim image As String = ""
+                    Dim mruToken As String = ""
+                    Dim isUnique As Boolean
+                    Dim itemComposite As ApplicationDataCompositeValue
 
-                For Each entry In itemWithPerks.Value.Values
-                    If entry.Key.StartsWith("PERK") Then
-                        Dim perkComposite As ApplicationDataCompositeValue = entry.Value
-                        Dim itemPerk = New Perk With {
-                            .IsUnique = perkComposite("PerkIsUnique"),
-                            .Description = perkComposite("Description")
-                        }
-                        perks.Add(itemPerk)
-                    Else
-                        itemComposite = entry.Value
-                        Try
-                            id = itemComposite("Id")
-                            type = itemComposite("Type")
-                            name = itemComposite("Name")
-                            descr = itemComposite("Description")
-                            image = itemComposite("Image")
-                            mruToken = itemComposite("mruToken")
-                            isUnique = itemComposite("IsUnique")
-                        Catch ex As Exception
-                        End Try
+                    For Each entry In itemWithPerks.Value.Values
+                        If entry.Key.StartsWith("PERK") Then
+                            Dim perkComposite As ApplicationDataCompositeValue = entry.Value
+                            Dim itemPerk = PerkRepository.Current.GetPerk(perkComposite("Id"))
+                            If itemPerk IsNot Nothing Then
+                                perks.Add(itemPerk)
+                            End If
+                        ElseIf entry.Key.StartsWith("ENCHANTMENT") Then
+                            Dim enchantmentComposite As ApplicationDataCompositeValue = entry.Value
+                            Dim itemEnchantment = EnchantmentRepository.Current.GetEnchantment(enchantmentComposite("Id"))
+                            If itemEnchantment IsNot Nothing Then
+                                enchantments.Add(itemEnchantment)
+                            End If
+                        Else
+                            itemComposite = entry.Value
+                            Try
+                                id = itemComposite("Id")
+                                type = itemComposite("Type")
+                                name = itemComposite("Name")
+                                descr = itemComposite("Description")
+                                image = itemComposite("Image")
+                                mruToken = itemComposite("mruToken")
+                                isUnique = itemComposite("IsUnique")
+                            Catch ex As Exception
+                            End Try
+                        End If
+                    Next
+
+                    If name <> "" Then
+                        Dim itemType As ItemType = Item.GetTypeFromString(type)
+
+                        Dim newItem As Item = ItemFactory.CreateItem(itemType, id)
+                        newItem.Name = name
+                        newItem.Description = descr
+                        newItem.Image = image
+                        newItem.mruToken = mruToken
+                        newItem.IsUnique = isUnique
+                        newItem.Perks = perks
+
+                        Select Case itemType
+                            Case ItemType.Melee
+                                Dim melee As Melee = DirectCast(newItem, Melee)
+                                melee.Force = itemComposite("Force")
+                                melee.Range = itemComposite("Range")
+                                melee.Speed = itemComposite("Speed")
+                            Case ItemType.Artillery
+                                Dim artillery As Artillery = DirectCast(newItem, Artillery)
+                                artillery.Force = itemComposite("Force")
+                                artillery.Ammo = itemComposite("Ammo")
+                                artillery.Speed = itemComposite("Speed")
+                        End Select
+
+                        Items.Add(newItem)
                     End If
                 Next
-
-                If name <> "" Then
-                    Dim itemType As ItemType = Item.GetTypeFromString(type)
-
-                    Dim newItem As Item = ItemFactory.CreateItem(itemType, id)
-                    newItem.Name = name
-                    newItem.Description = descr
-                    newItem.Image = image
-                    newItem.mruToken = mruToken
-                    newItem.IsUnique = isUnique
-                    newItem.Perks = perks
-
-                    Select Case itemType
-                        Case ItemType.Melee
-                            Dim melee As Melee = DirectCast(newItem, Melee)
-                            melee.Force = itemComposite("Force")
-                            melee.Range = itemComposite("Range")
-                            melee.Speed = itemComposite("Speed")
-                        Case ItemType.Artillery
-                            Dim artillery As Artillery = DirectCast(newItem, Artillery)
-                            artillery.Force = itemComposite("Force")
-                            artillery.Ammo = itemComposite("Ammo")
-                            artillery.Speed = itemComposite("Speed")
-                    End Select
-
-                    Items.Add(newItem)
-                End If
-            Next
-            ContentLoaded = True
+                ContentLoaded = True
+            End If
         End Sub
 
         Public Sub AddItem(toAdd As Item)
@@ -116,10 +141,14 @@ Namespace Global.DungeonItems.Repository
 
             itemWithPerks.Values(toAdd.Id.ToString()) = itemComposite
             For Each perk In toAdd.Perks
-                Dim perkComposite = New Windows.Storage.ApplicationDataCompositeValue()
-                perkComposite("IsUnique") = perk.IsUnique
-                perkComposite("Description") = perk.Description
-                itemWithPerks.Values("PERK" + Guid.NewGuid().ToString()) = perkComposite
+                Dim perkComposite = New ApplicationDataCompositeValue()
+                perkComposite("Id") = perk.Id
+                itemWithPerks.Values("PERK" + perk.Id.ToString()) = perkComposite
+            Next
+            For Each enchantment In toAdd.Enchantments
+                Dim enchantmentComposite = New ApplicationDataCompositeValue()
+                enchantmentComposite("Id") = enchantment.Id
+                itemWithPerks.Values("ENCHANTMENT" + enchantment.Id.ToString()) = enchantmentComposite
             Next
         End Sub
 

@@ -1,68 +1,35 @@
 ﻿Imports DungeonItems.Commands
 Imports DungeonItems.Model
 Imports DungeonItems.Repository
-Imports DungeonItems.Views
 Imports Windows.Storage
 
 Namespace Global.DungeonItems.ViewModels
 
-    Public Class ItemViewModel
+    Public Class EnchantmentViewModel
         Inherits ItemTypeBase
 
-        Public Property Model As Item
-
-        Protected SelectedPerk As PerkViewModel = Nothing
+        Public Property Model As Enchantment
 
         Public Property Modified As Boolean = False
 
-        Private _isInEdit As Boolean = False
-        Public Property IsInEdit As Boolean
-            Get
-                Return _isInEdit
-            End Get
-            Set(value As Boolean)
-                If value <> _isInEdit Then
-                    SetProperty(Of Boolean)(_isInEdit, value, "IsInEdit")
-                End If
-            End Set
-        End Property
-
-        Public Property AddPerkCommand As RelayCommand
-        Public Property EditPerkCommand As RelayCommand
-        Public Property DeletePerkCommand As RelayCommand
         Public Property ChangeImageCommand As RelayCommand
 
-        Public Property DisplayImage As Image
         Public Property EditImage As Image
 
-        Public Shared Function Create(model As Item) As ItemViewModel
-            Select Case model.Type
-                Case Item.ItemType.Artillery
-                    Return New ArtilleryViewModel(model)
-            End Select
-            Return Nothing
-        End Function
-
-        Public Sub New(model As Item)
+        Public Sub New(model As Enchantment)
             Me.Model = model
-            For Each p In model.Perks
-                Perks.Add(New PerkViewModel(p))
-            Next
-            AddPerkCommand = New RelayCommand(AddressOf AddPerk)
-            EditPerkCommand = New RelayCommand(AddressOf EditPerk)
-            DeletePerkCommand = New RelayCommand(AddressOf DeletePerk)
             ChangeImageCommand = New RelayCommand(AddressOf ChangeImage)
         End Sub
-
-        Public ReadOnly Property Id As Guid
-            Get
-                Return Model.Id
-            End Get
-        End Property
 
         Public ReadOnly Property Type As Item.ItemType
             Get
                 Return Model.Type
+            End Get
+        End Property
+
+        Public ReadOnly Property Id As Guid
+            Get
+                Return Model.Id
             End Get
         End Property
 
@@ -118,66 +85,22 @@ Namespace Global.DungeonItems.ViewModels
             End Set
         End Property
 
-        Public Property IsUnique As Boolean
-            Get
-                Return Model.IsUnique
-            End Get
-            Set(value As Boolean)
-                If value <> Model.IsUnique Then
-                    Model.IsUnique = value
-                    OnPropertyChanged("IsUnique")
-                    Modified = True
-                End If
-            End Set
-        End Property
-
-        Public Property Perks As New ObservableCollection(Of PerkViewModel)
-
-        Private Async Sub AddPerk()
-            Dim dialog As New PerkEditDialog(New PerkViewModel(New Perk))
-            Await dialog.ShowAsync()
-            If Not dialog.Cancelled Then
-                Perks.Add(dialog.Model)
-                Modified = True
-            End If
-        End Sub
-
-        Public Sub SetSelectedPerk(perk As PerkViewModel)
-            SelectedPerk = perk
-        End Sub
-
-        Public Sub Save(repository As ItemRepository)
+        Public Sub Save(repository As EnchantmentRepository)
             If Modified Then
-                repository.UpdateItem(Model)
+                repository.UpdateEnchantment(Model)
                 Modified = False
             End If
         End Sub
 
-        Public Sub Delete(repository As ItemRepository)
-            repository.DeleteItem(Model)
+        Public Sub Delete(repository As EnchantmentRepository)
+            repository.DeleteEnchantment(Model)
             Modified = False
         End Sub
 
-        Private Async Sub EditPerk()
-            If SelectedPerk IsNot Nothing Then
-                Dim dialog As New PerkEditDialog(SelectedPerk)
-                Await dialog.ShowAsync()
-                Modified = Modified OrElse SelectedPerk.Modified
-            End If
-        End Sub
-
-        Private Sub DeletePerk()
-            If SelectedPerk IsNot Nothing Then
-                Perks.Remove(SelectedPerk)
-                SelectedPerk = Nothing
-                Modified = True
-            End If
-        End Sub
-
         Private Async Sub ChangeImage()
-            Dim openPicker = New Windows.Storage.Pickers.FileOpenPicker()
+            Dim openPicker = New Pickers.FileOpenPicker()
             openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary
-            openPicker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail
+            openPicker.ViewMode = Pickers.PickerViewMode.Thumbnail
 
             ' Filter to include a sample subset of file types.
             openPicker.FileTypeFilter.Clear()
@@ -224,7 +147,6 @@ Namespace Global.DungeonItems.ViewModels
                     Dim bitmapImage = New Windows.UI.Xaml.Media.Imaging.BitmapImage()
 
                     bitmapImage.SetSource(fileStream)
-                    DisplayImage.Source = bitmapImage
                     EditImage.Source = bitmapImage
                 Catch ex As Exception
                 End Try

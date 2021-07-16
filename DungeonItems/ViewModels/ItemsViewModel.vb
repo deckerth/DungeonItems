@@ -8,15 +8,23 @@ Namespace Global.DungeonItems.ViewModels
     Public Class ItemsViewModel
         Inherits BindableBase
 
-        Public Property Items As New ObservableCollection(Of ItemViewModel)
+        Private Items As New ObservableCollection(Of ItemViewModel)
+        Public Property FilteredItems As New ObservableCollection(Of ItemViewModel)
+
+        Public Shared Property Current As ItemsViewModel
 
         Public Property AddMeleeCommand As RelayCommand
         Public Property AddArtilleryCommand As RelayCommand
         Public Property AddArmorCommand As RelayCommand
         Public Property DeleteCommand As RelayCommand
         Public Property HomeCommand As RelayCommand
+        Public Property NavigateToPerksCommand As RelayCommand
+        Public Property NavigateToEnchantmentsCommand As RelayCommand
 
         Public Property DetailFrame As Frame
+        Public Property RootFrame As Frame
+
+        Public Property TypeFilter As New TypeFilterViewModel
 
         Private _isInEdit As Boolean = False
         Public Property IsInEdit As Boolean
@@ -68,6 +76,7 @@ Namespace Global.DungeonItems.ViewModels
         Private Repository As New ItemRepository
 
         Public Sub New()
+            Current = Me
             Repository.Load()
 
             For Each i In Repository.Items
@@ -77,11 +86,16 @@ Namespace Global.DungeonItems.ViewModels
                 End Select
             Next
 
+            AddHandler TypeFilter.UpdateFilter, AddressOf HandleUpdateFilter
+            HandleUpdateFilter()
+
             AddMeleeCommand = New RelayCommand(AddressOf doAddMelee)
             AddArtilleryCommand = New RelayCommand(AddressOf doAddArtillery)
             AddArmorCommand = New RelayCommand(AddressOf doAddArmor)
             DeleteCommand = New RelayCommand(AddressOf doDelete)
             HomeCommand = New RelayCommand(AddressOf displayHomePage)
+            NavigateToPerksCommand = New RelayCommand(AddressOf NavigateToPerksPage)
+            NavigateToEnchantmentsCommand = New RelayCommand(AddressOf NavigateToEnchantmentsPage)
 
         End Sub
 
@@ -128,6 +142,23 @@ Namespace Global.DungeonItems.ViewModels
                 Selected = Nothing
                 DetailFrame.Navigate(GetType(BlankPage))
             End If
+        End Sub
+
+        Private Sub NavigateToPerksPage()
+            RootFrame.Navigate(GetType(PerksEditorPage), PerksViewModel.Current)
+        End Sub
+
+        Private Sub NavigateToEnchantmentsPage()
+            RootFrame.Navigate(GetType(EnchantmentsEditorPage), EnchantmentsViewModel.Current)
+        End Sub
+
+        Private Sub HandleUpdateFilter()
+            FilteredItems.Clear()
+            For Each e In Items
+                If TypeFilter.visible(e) Then
+                    FilteredItems.Add(e)
+                End If
+            Next
         End Sub
 
     End Class

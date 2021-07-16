@@ -1,4 +1,5 @@
 ﻿Imports DungeonItems.Model
+Imports DungeonItems.Repository
 
 Namespace Global.DungeonItems.ViewModels
 
@@ -13,19 +14,6 @@ Namespace Global.DungeonItems.ViewModels
             Me.Model = model
         End Sub
 
-        Public Property IsUnique As Boolean
-            Get
-                Return Model.IsUnique
-            End Get
-            Set(value As Boolean)
-                If value <> Model.IsUnique Then
-                    Model.IsUnique = value
-                    OnPropertyChanged("IsUnique")
-                    Modified = True
-                End If
-            End Set
-        End Property
-
         Public Property Description As String
             Get
                 Return Model.Description
@@ -39,6 +27,17 @@ Namespace Global.DungeonItems.ViewModels
             End Set
         End Property
 
+        Friend Sub Save(repository As PerkRepository)
+            If Modified Then
+                repository.UpdatePerk(Model)
+                Modified = False
+            End If
+        End Sub
+
+        Friend Sub Delete(repository As PerkRepository)
+            repository.DeletePerk(Model)
+            Modified = False
+        End Sub
     End Class
 
 End Namespace

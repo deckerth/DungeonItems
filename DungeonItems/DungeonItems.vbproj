@@ -137,28 +137,52 @@
     </Compile>
     <Compile Include="Model\Armor.vb" />
     <Compile Include="Model\Artillery.vb" />
+    <Compile Include="Model\Enchantment.vb" />
+    <Compile Include="Model\IItemType.vb" />
     <Compile Include="Model\Item.vb" />
     <Compile Include="Model\ItemFactory.vb" />
     <Compile Include="Model\Melee.vb" />
     <Compile Include="Model\Perk.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="Repository\EnchantmentRepository.vb" />
     <Compile Include="Repository\ItemRepository.vb" />
+    <Compile Include="Repository\PerkRepository.vb" />
     <Compile Include="ValueConverters\BooleanOperator.vb" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
     <Compile Include="ValueConverters\ItemTypeToStringConverter.vb" />
     <Compile Include="ViewModels\ArtilleryViewModel.vb" />
     <Compile Include="ViewModels\BindableBase.vb" />
+    <Compile Include="ViewModels\EnchantmentsViewModel.vb" />
+    <Compile Include="ViewModels\EnchantmentViewModel.vb" />
     <Compile Include="ViewModels\ItemsViewModel.vb" />
+    <Compile Include="ViewModels\ItemTypeBase.vb" />
     <Compile Include="ViewModels\ItemViewModel.vb" />
+    <Compile Include="ViewModels\PerksViewModel.vb" />
     <Compile Include="ViewModels\PerkViewModel.vb" />
+    <Compile Include="ViewModels\TypeFilterViewModel.vb" />
     <Compile Include="Views\ArtilleryPage.xaml.vb">
       <DependentUpon>ArtilleryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\BlankPage.xaml.vb">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EmptyPage.xaml.vb">
+      <DependentUpon>EmptyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EnchantmentPage.xaml.vb">
+      <DependentUpon>EnchantmentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EnchantmentsEditorPage.xaml.vb">
+      <DependentUpon>EnchantmentsEditorPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PerkEditDialog.xaml.vb">
       <DependentUpon>PerkEditDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PerkPage.xaml.vb">
+      <DependentUpon>PerkPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PerksEditorPage.xaml.vb">
+      <DependentUpon>PerksEditorPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -193,7 +217,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EmptyPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EnchantmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EnchantmentsEditorPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PerkEditDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PerkPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PerksEditorPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -238,6 +282,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Design\BlockDiagram.pptx" />
+    <None Include="Design\DungeonItemKey.pptx" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

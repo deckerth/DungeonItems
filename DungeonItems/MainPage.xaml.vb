@@ -15,8 +15,9 @@ Public NotInheritable Class MainPage
     Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
         MyBase.OnNavigatedTo(e)
         ViewModel = DirectCast(e.Parameter, ItemsViewModel)
-        ItemsList.ItemsSource = ViewModel.Items
+        ItemsList.ItemsSource = ViewModel.FilteredItems
         ViewModel.DetailFrame = DetailFrame
+        ViewModel.RootFrame = Frame
         DetailFrame.Navigate(GetType(BlankPage))
     End Sub
 

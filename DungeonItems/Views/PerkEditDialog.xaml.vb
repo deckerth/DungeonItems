@@ -14,12 +14,10 @@ Namespace Global.DungeonItems.Views
             OriginalModel = model
             Me.Model = New PerkViewModel(New Perk())
             Me.Model.Description = model.Description
-            Me.Model.IsUnique = model.IsUnique
         End Sub
 
         Private Sub ContentDialog_PrimaryButtonClick(sender As ContentDialog, args As ContentDialogButtonClickEventArgs)
             OriginalModel.Description = Model.Description
-            OriginalModel.IsUnique = Model.IsUnique
         End Sub
 
         Private Sub ContentDialog_SecondaryButtonClick(sender As ContentDialog, args As ContentDialogButtonClickEventArgs)

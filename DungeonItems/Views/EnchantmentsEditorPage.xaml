@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="DungeonItems.MainPage"
+    x:Class="DungeonItems.Views.EnchantmentsEditorPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:DungeonItems"
+    xmlns:local="using:DungeonItems.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:DungeonItems.ViewModels"
@@ -13,8 +13,8 @@
     <Page.Resources>
         <ResourceDictionary>
             <converters:ItemTypeToStringConverter x:Key="itemTypeToStringConverter"/>
-            <DataTemplate x:Key="ItemTemplate" x:DataType="vm:ItemViewModel">
-                <Grid Visibility="{x:Bind vm:TypeFilterViewModel.ItemVisibility(Type, vm:ItemsViewModel.Current.TypeFilter.SelectMelee, vm:ItemsViewModel.Current.TypeFilter.SelectArtillery, vm:ItemsViewModel.Current.TypeFilter.SelectArmor),Mode=OneWay}">
+            <DataTemplate x:Key="ItemTemplate" x:DataType="vm:EnchantmentViewModel">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
@@ -34,7 +34,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Gegenstand löschen?" Margin="0, 0, 0, 10"/>
+                    <TextBlock Text="Verzauberung löschen?" Margin="0, 0, 0, 10"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="1">
                         <Button x:Name="DoDeleteButton" Content="Ja" Command="{x:Bind ViewModel.DeleteCommand}" Click="DoDeleteButton_Click" />
                         <Button x:Name="DoNotDeleteButton" Content="Nein" Margin="10, 0, 0, 0" Click="DoNotDeleteButton_Click"/>
@@ -54,27 +54,28 @@
             <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
         <CommandBar Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <CommandBar.Content>
-                <TextBlock Text="   Minecraft Dungeon Items" Style="{ThemeResource TitleTextBlockStyle}"/>
+                <TextBlock Text="   Verzauberungen" Style="{ThemeResource TitleTextBlockStyle}"/>
             </CommandBar.Content>
             <AppBarButton Icon="Home" Command="{x:Bind ViewModel.HomeCommand}"/>
             <AppBarButton Icon="Add">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem Text="Nahkampf" Command="{x:Bind ViewModel.AddMeleeCommand}"/>
-                        <MenuFlyoutItem Text="Fernkampf" Command="{x:Bind ViewModel.AddArtilleryCommand}"/>
-                        <MenuFlyoutItem Text="Rüstung" Command="{x:Bind ViewModel.AddArmorCommand}"/>
+                        <MenuFlyoutItem Text="Nahkampf Verzauberung" Command="{x:Bind ViewModel.AddMeleeEchantmentCommand}"/>
+                        <MenuFlyoutItem Text="Fernkampf Verzauberung" Command="{x:Bind ViewModel.AddArtilleryEchantmentCommand}"/>
+                        <MenuFlyoutItem Text="Rüstungsverzauberung" Command="{x:Bind ViewModel.AddArmorEchantmentCommand}"/>
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarToggleButton Icon="Edit" IsChecked="{x:Bind ViewModel.IsInEdit, Mode=TwoWay}"/>
             <AppBarButton Icon="Delete" Flyout="{StaticResource DeleteItemFlyout}" IsEnabled="{x:Bind converters:BooleanOperator.OpNotNull(ViewModel.Selected),Mode=OneWay}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Eigenschaften" Command="{x:Bind ViewModel.NavigateToPerksCommand}"/>
-                <AppBarButton Label="Verzauberungen" Command="{x:Bind ViewModel.NavigateToEnchantmentsCommand}"/>
+                <AppBarButton Label="Dungeon Items" Command="{x:Bind ViewModel.HomeCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
+
         <AppBarButton Grid.Row="1" Icon="Filter">
             <AppBarButton.Flyout>
                 <MenuFlyout>
@@ -85,10 +86,12 @@
                 </MenuFlyout>
             </AppBarButton.Flyout>
         </AppBarButton>
+
         <ListView x:Name="ItemsList" Grid.Row="2" Grid.Column="0"
                   IsItemClickEnabled="True"
-                  SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
+                  SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}" 
                   ItemTemplate="{StaticResource ItemTemplate}"/>
+        
         <ScrollViewer Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="50, 10, 0, 0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Frame x:Name="DetailFrame" MinHeight="800" MinWidth="600"/>
         </ScrollViewer>
