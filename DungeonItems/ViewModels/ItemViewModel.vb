@@ -10,8 +10,9 @@ Namespace Global.DungeonItems.ViewModels
         Inherits ItemTypeBase
 
         Public Property Model As Item
+        Public Property AllPerks As ObservableCollection(Of Perk) = PerkRepository.Current.Perks
 
-        Protected SelectedPerk As PerkViewModel = Nothing
+        Protected SelectedPerk As Perk = Nothing
 
         Public Property Modified As Boolean = False
 
@@ -27,13 +28,12 @@ Namespace Global.DungeonItems.ViewModels
             End Set
         End Property
 
-        Public Property AddPerkCommand As RelayCommand
-        Public Property EditPerkCommand As RelayCommand
-        Public Property DeletePerkCommand As RelayCommand
         Public Property ChangeImageCommand As RelayCommand
 
         Public Property DisplayImage As Image
         Public Property EditImage As Image
+
+        Public Property Perks As New ObservableCollection(Of Perk)
 
         Public Shared Function Create(model As Item) As ItemViewModel
             Select Case model.Type
@@ -45,13 +45,10 @@ Namespace Global.DungeonItems.ViewModels
 
         Public Sub New(model As Item)
             Me.Model = model
-            For Each p In model.Perks
-                Perks.Add(New PerkViewModel(p))
-            Next
-            AddPerkCommand = New RelayCommand(AddressOf AddPerk)
-            EditPerkCommand = New RelayCommand(AddressOf EditPerk)
-            DeletePerkCommand = New RelayCommand(AddressOf DeletePerk)
             ChangeImageCommand = New RelayCommand(AddressOf ChangeImage)
+            For Each p In Me.Model.Perks
+                Perks.Add(p)
+            Next
         End Sub
 
         Public ReadOnly Property Id As Guid
@@ -131,19 +128,10 @@ Namespace Global.DungeonItems.ViewModels
             End Set
         End Property
 
-        Public Property Perks As New ObservableCollection(Of PerkViewModel)
-
-        Private Async Sub AddPerk()
-            Dim dialog As New PerkEditDialog(New PerkViewModel(New Perk))
-            Await dialog.ShowAsync()
-            If Not dialog.Cancelled Then
-                Perks.Add(dialog.Model)
-                Modified = True
-            End If
-        End Sub
-
-        Public Sub SetSelectedPerk(perk As PerkViewModel)
-            SelectedPerk = perk
+        Public Sub AddPerk(toAdd As Perk)
+            Model.Perks.Add(toAdd)
+            Perks.Add(toAdd)
+            Modified = True
         End Sub
 
         Public Sub Save(repository As ItemRepository)
@@ -158,16 +146,9 @@ Namespace Global.DungeonItems.ViewModels
             Modified = False
         End Sub
 
-        Private Async Sub EditPerk()
+        Public Sub DeletePerk()
             If SelectedPerk IsNot Nothing Then
-                Dim dialog As New PerkEditDialog(SelectedPerk)
-                Await dialog.ShowAsync()
-                Modified = Modified OrElse SelectedPerk.Modified
-            End If
-        End Sub
-
-        Private Sub DeletePerk()
-            If SelectedPerk IsNot Nothing Then
+                Model.Perks.Remove(SelectedPerk)
                 Perks.Remove(SelectedPerk)
                 SelectedPerk = Nothing
                 Modified = True
@@ -175,9 +156,9 @@ Namespace Global.DungeonItems.ViewModels
         End Sub
 
         Private Async Sub ChangeImage()
-            Dim openPicker = New Windows.Storage.Pickers.FileOpenPicker()
+            Dim openPicker = New Pickers.FileOpenPicker()
             openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary
-            openPicker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail
+            openPicker.ViewMode = Pickers.PickerViewMode.Thumbnail
 
             ' Filter to include a sample subset of file types.
             openPicker.FileTypeFilter.Clear()

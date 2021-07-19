@@ -143,10 +143,12 @@
     <Compile Include="Model\ItemFactory.vb" />
     <Compile Include="Model\Melee.vb" />
     <Compile Include="Model\Perk.vb" />
+    <Compile Include="Model\Rune.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Repository\EnchantmentRepository.vb" />
     <Compile Include="Repository\ItemRepository.vb" />
     <Compile Include="Repository\PerkRepository.vb" />
+    <Compile Include="Repository\RuneRepository.vb" />
     <Compile Include="ValueConverters\BooleanOperator.vb" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
     <Compile Include="ValueConverters\ItemTypeToStringConverter.vb" />
@@ -160,6 +162,8 @@
     <Compile Include="ViewModels\PerksViewModel.vb" />
     <Compile Include="ViewModels\PerkViewModel.vb" />
     <Compile Include="ViewModels\TypeFilterViewModel.vb" />
+    <Compile Include="ViewModels\TypeGroup.vb" />
+    <Compile Include="ViewModels\TypeGroups.vb" />
     <Compile Include="Views\ArtilleryPage.xaml.vb">
       <DependentUpon>ArtilleryPage.xaml</DependentUpon>
     </Compile>
@@ -208,6 +212,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\AcrylicBrush_19h1_themeresources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ArtilleryPage.xaml">
       <SubType>Designer</SubType>

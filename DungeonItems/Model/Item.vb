@@ -64,6 +64,7 @@
         Public Property mruToken As String
         Public Property Perks As New List(Of Perk)
         Public Property Enchantments As New List(Of Enchantment)
+        Public Property Runes As New List(Of Rune)
         Public Property IsUnique As Boolean
         Public Property InstanceCount As Integer
 

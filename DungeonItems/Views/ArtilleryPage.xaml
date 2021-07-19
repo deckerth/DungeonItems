@@ -8,12 +8,24 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:DungeonItems.ViewModels"
+    xmlns:m="using:DungeonItems.Model"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <ResourceDictionary>
             <converters:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+            <DataTemplate x:Key="PerkTemplate" x:DataType="m:Perk">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="{x:Bind Description,Mode=OneWay}" FontFamily="Mojang"
+                                       FontSize="18" Margin="10, 10, 0, 10"
+                                        />
+                 </Grid>
+            </DataTemplate>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -68,7 +80,7 @@
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="IsUniqueCheckbox"/>
-
+        
         <Border x:Name="ItemImageDisplayBorder"
                 BorderBrush="Black"
                 RelativePanel.AlignTopWith="Description"
@@ -93,11 +105,23 @@
                 Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                 Command="{x:Bind ViewModel.ChangeImageCommand,Mode=OneWay}"/>
 
+        <TextBlock x:Name="StatsCaptionDisplayMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="Description"/>
+
+        <TextBlock x:Name="StatsCaptionEditMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="DescriptionEditor"/>
+
         <telerikGauge:RadLinearGauge x:Name="ForceGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200"  Height="50"
                                      Margin="0, 20, 0, 0"
                                      Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                                      RelativePanel.AlignLeftWithPanel="True"
-                                     RelativePanel.Below="Description"
+                                     RelativePanel.Below="StatsCaptionDisplayMode"
                                      >
             <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Force,Mode=OneWay}" Brush="Red" Thickness="5" Margin="10"
                                                   />
@@ -107,13 +131,13 @@
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    RelativePanel.RightOf="ForceGauge"
-                   RelativePanel.Below="Description"/>
+                   RelativePanel.Below="StatsCaptionDisplayMode"/>
         
         <Slider x:Name="ForceSlider" Header="KRAFT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Force,Mode=TwoWay}"
                    Margin="0, 10, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="DescriptionEditor"/>
+                   RelativePanel.Below="StatsCaptionEditMode"/>
 
         <TextBox x:Name="ForceEditor" Text="{x:Bind ViewModel.Force,Mode=TwoWay}"
                    Margin="30, 30, 0, 0"
@@ -172,6 +196,45 @@
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.RightOf="AmmoSlider"
                    RelativePanel.AlignVerticalCenterWith="AmmoSlider"/>
+
+        <TextBlock x:Name="PerksCaptionDisplayMode" Text="Eigenschaften" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="AmmoGauge"/>
+
+        <TextBlock x:Name="PerksCaptionEditMode" Text="Eigenschaften" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="AmmoSlider"/>
+
+        <SplitButton x:Name="AddPerk" 
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="PerksCaptionEditMode">
+            Eigenschaft hinzufügen
+            <SplitButton.Flyout>
+                <Flyout Placement="Bottom">
+                    <GridView x:Name="PerkChooser"
+                        ItemTemplate="{StaticResource PerkTemplate}"
+                        ItemsSource="{x:Bind ViewModel.AllPerks}" ItemClick="PerkChooser_ItemClick"      
+                        IsItemClickEnabled="True"
+                        />
+                </Flyout>
+            </SplitButton.Flyout>
+        </SplitButton>
+
+        <GridView x:Name="PerkGridViewEditMode"
+                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   Background="{ThemeResource AccentAcrylicBackgroundFillColorBaseBrush}"
+                   ItemTemplate="{StaticResource PerkTemplate}"
+                   ItemsSource="{x:Bind ViewModel.Perks}"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.Below="AddPerk">
+        </GridView>
 
     </RelativePanel>
 </Page>

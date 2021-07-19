@@ -9,7 +9,7 @@ Namespace Global.DungeonItems.ViewModels
         Inherits BindableBase
 
         Private Enchantments As New ObservableCollection(Of EnchantmentViewModel)
-        Public Property FilteredEnchantments As New ObservableCollection(Of EnchantmentViewModel)
+        Public Property GroupedEnhancements As New TypeGroups
 
         Private Shared _current As EnchantmentsViewModel
         Public Shared ReadOnly Property Current As EnchantmentsViewModel
@@ -105,7 +105,7 @@ Namespace Global.DungeonItems.ViewModels
             Dim itemVM = New EnchantmentViewModel(newItem)
             itemVM.Modified = True
             Enchantments.Add(itemVM)
-            FilteredEnchantments.Add(itemVM)
+            GroupedEnhancements.Add(itemVM)
             Selected = itemVM
         End Sub
 
@@ -125,7 +125,7 @@ Namespace Global.DungeonItems.ViewModels
             If Selected IsNot Nothing Then
                 Selected.Delete(Repository)
                 Enchantments.Remove(Selected)
-                FilteredEnchantments.Remove(Selected)
+                GroupedEnhancements.Delete(Selected)
                 Navigate()
             End If
         End Sub
@@ -141,12 +141,7 @@ Namespace Global.DungeonItems.ViewModels
         End Sub
 
         Private Sub HandleUpdateFilter()
-            FilteredEnchantments.Clear()
-            For Each e In Enchantments
-                If TypeFilter.visible(e) Then
-                    FilteredEnchantments.Add(e)
-                End If
-            Next
+            GroupedEnhancements.ApplyFilter(TypeFilter, Enchantments)
         End Sub
 
     End Class

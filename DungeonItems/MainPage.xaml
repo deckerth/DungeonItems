@@ -12,6 +12,8 @@
 
     <Page.Resources>
         <ResourceDictionary>
+            <CollectionViewSource x:Name="GroupedItemsCVS"  IsSourceGrouped="True" />
+
             <converters:ItemTypeToStringConverter x:Key="itemTypeToStringConverter"/>
             <DataTemplate x:Key="ItemTemplate" x:DataType="vm:ItemViewModel">
                 <Grid Visibility="{x:Bind vm:TypeFilterViewModel.ItemVisibility(Type, vm:ItemsViewModel.Current.TypeFilter.SelectMelee, vm:ItemsViewModel.Current.TypeFilter.SelectArtillery, vm:ItemsViewModel.Current.TypeFilter.SelectArmor),Mode=OneWay}">
@@ -88,7 +90,26 @@
         <ListView x:Name="ItemsList" Grid.Row="2" Grid.Column="0"
                   IsItemClickEnabled="True"
                   SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
-                  ItemTemplate="{StaticResource ItemTemplate}"/>
+                  ItemTemplate="{StaticResource ItemTemplate}">
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate x:DataType="vm:TypeGroup">
+                            <Grid Height="Auto" Width="400">
+                                <Border Background="Yellow"  >
+                                    <TextBlock Text="{x:Bind Type,Converter={StaticResource itemTypeToStringConverter}}" 
+                                                FontFamily="Segoe UI Semilight"
+                                                FontSize="16"
+                                                FontWeight="Normal" HorizontalAlignment="Center" 
+                                                Foreground="Black"
+                                                />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>
         <ScrollViewer Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="50, 10, 0, 0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Frame x:Name="DetailFrame" MinHeight="800" MinWidth="600"/>
         </ScrollViewer>

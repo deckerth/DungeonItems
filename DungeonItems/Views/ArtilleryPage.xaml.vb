@@ -15,6 +15,10 @@ Namespace Global.DungeonItems.Views
             ViewModel.EditImage = ItemImageEdit
             Await ViewModel.LoadImageAsync()
         End Sub
+
+        Private Sub PerkChooser_ItemClick(sender As Object, e As ItemClickEventArgs)
+            ViewModel.AddPerk(e.ClickedItem)
+        End Sub
     End Class
 
 End Namespace

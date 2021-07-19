@@ -9,7 +9,7 @@ Namespace Global.DungeonItems.ViewModels
         Inherits BindableBase
 
         Private Items As New ObservableCollection(Of ItemViewModel)
-        Public Property FilteredItems As New ObservableCollection(Of ItemViewModel)
+        Public Property GroupedItems As New TypeGroups
 
         Public Shared Property Current As ItemsViewModel
 
@@ -125,7 +125,7 @@ Namespace Global.DungeonItems.ViewModels
             Dim itemVM = ItemViewModel.Create(newItem)
             itemVM.Modified = True
             Items.Add(itemVM)
-            FilteredItems.Add(itemVM)
+            GroupedItems.Add(itemVM)
             Selected = itemVM
             IsInEdit = True
         End Sub
@@ -134,7 +134,7 @@ Namespace Global.DungeonItems.ViewModels
             If Selected IsNot Nothing Then
                 Selected.Delete(Repository)
                 Items.Remove(Selected)
-                FilteredItems.Remove(Selected)
+                GroupedItems.Delete(Selected)
                 DetailFrame.Navigate(GetType(BlankPage))
             End If
         End Sub
@@ -155,12 +155,7 @@ Namespace Global.DungeonItems.ViewModels
         End Sub
 
         Private Sub HandleUpdateFilter()
-            FilteredItems.Clear()
-            For Each e In Items
-                If TypeFilter.visible(e) Then
-                    FilteredItems.Add(e)
-                End If
-            Next
+            GroupedItems.ApplyFilter(TypeFilter, Items)
         End Sub
 
     End Class

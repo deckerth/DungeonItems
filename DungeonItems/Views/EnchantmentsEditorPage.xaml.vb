@@ -10,7 +10,8 @@ Namespace Global.DungeonItems.Views
         Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
             MyBase.OnNavigatedTo(e)
             ViewModel = DirectCast(e.Parameter, EnchantmentsViewModel)
-            ItemsList.ItemsSource = ViewModel.FilteredEnchantments
+            GroupedEnchantmentsCVS.Source = ViewModel.GroupedEnhancements.GroupedElements
+            ItemsList.ItemsSource = GroupedEnchantmentsCVS.View
             ViewModel.DetailFrame = DetailFrame
             ViewModel.RootFrame = Frame
             ViewModel.Navigate()
