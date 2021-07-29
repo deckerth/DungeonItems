@@ -1,5 +1,4 @@
 ﻿Imports DungeonItems.Model
-Imports DungeonItems.ViewModel
 
 Namespace Global.DungeonItems.ViewModels
 

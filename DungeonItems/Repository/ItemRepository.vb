@@ -20,6 +20,10 @@ Namespace Global.DungeonItems.Repository
 
         Private ContentLoaded As Boolean
 
+        Private Sub New()
+            _current = Me
+        End Sub
+
         Public Sub Reload()
             ContentLoaded = False
             Load()
@@ -36,8 +40,9 @@ Namespace Global.DungeonItems.Repository
                 Items.Clear()
 
                 For Each itemWithPerks In itemList.Containers
-                    Dim perks As New List(Of Perk)
-                    Dim enchantments As New List(Of Enchantment)
+                    Dim perks As New ObservableCollection(Of Perk)
+                    Dim enchantments As New ObservableCollection(Of Enchantment)
+                    Dim runes As New ObservableCollection(Of Rune)
                     Dim id As Guid
                     Dim type As String = ""
                     Dim name As String = ""
@@ -59,6 +64,12 @@ Namespace Global.DungeonItems.Repository
                             Dim itemEnchantment = EnchantmentRepository.Current.GetEnchantment(enchantmentComposite("Id"))
                             If itemEnchantment IsNot Nothing Then
                                 enchantments.Add(itemEnchantment)
+                            End If
+                        ElseIf entry.Key.StartsWith("RUNE") Then
+                            Dim runeComposite As ApplicationDataCompositeValue = entry.Value
+                            Dim itemRune = RuneRepository.Current.GetRune(runeComposite("Name"))
+                            If itemRune IsNot Nothing Then
+                                runes.Add(itemRune)
                             End If
                         Else
                             itemComposite = entry.Value
@@ -85,6 +96,8 @@ Namespace Global.DungeonItems.Repository
                         newItem.mruToken = mruToken
                         newItem.IsUnique = isUnique
                         newItem.Perks = perks
+                        newItem.Enchantments = enchantments
+                        newItem.Runes = runes
 
                         Select Case itemType
                             Case ItemType.Melee
@@ -149,6 +162,11 @@ Namespace Global.DungeonItems.Repository
                 Dim enchantmentComposite = New ApplicationDataCompositeValue()
                 enchantmentComposite("Id") = enchantment.Id
                 itemWithPerks.Values("ENCHANTMENT" + enchantment.Id.ToString()) = enchantmentComposite
+            Next
+            For Each rune In toAdd.Runes
+                Dim runeComposite = New ApplicationDataCompositeValue()
+                runeComposite("Name") = rune.Name
+                itemWithPerks.Values("RUNE" + rune.Name.ToString()) = runeComposite
             Next
         End Sub
 

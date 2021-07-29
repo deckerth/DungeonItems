@@ -77,11 +77,11 @@ Namespace Global.DungeonItems.ViewModels
             Next
         End Sub
 
-        Private Repository As New EnchantmentRepository
-
+        Private Repository As EnchantmentRepository
 
         Public Sub New()
             _current = Me
+            Repository = EnchantmentRepository.Current
             Repository.Load()
 
             For Each i In Repository.Enchantments

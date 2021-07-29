@@ -62,11 +62,23 @@
         Public Property Description As String
         Public Property Image As String
         Public Property mruToken As String
-        Public Property Perks As New List(Of Perk)
-        Public Property Enchantments As New List(Of Enchantment)
-        Public Property Runes As New List(Of Rune)
+        Public Property Perks As New ObservableCollection(Of Perk)
+        Public Property Enchantments As New ObservableCollection(Of Enchantment)
+        Public Property Runes As New ObservableCollection(Of Rune)
         Public Property IsUnique As Boolean
         Public Property InstanceCount As Integer
+
+        Public Function HasPerk(id As Guid) As Boolean
+            Return Perks.FirstOrDefault(Function(other) other.Id = id) IsNot Nothing
+        End Function
+
+        Public Function HasEnchantment(id As Guid) As Boolean
+            Return Enchantments.FirstOrDefault(Function(other) other.Id = id) IsNot Nothing
+        End Function
+
+        Public Function HasRune(name As String) As Boolean
+            Return Runes.FirstOrDefault(Function(other) other.Name = name) IsNot Nothing
+        End Function
 
         Public Sub New(Type As ItemType, Id As Guid)
             _Type = Type

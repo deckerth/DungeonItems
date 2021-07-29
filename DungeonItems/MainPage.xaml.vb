@@ -19,7 +19,7 @@ Public NotInheritable Class MainPage
         ItemsList.ItemsSource = GroupedItemsCVS.View
         ViewModel.DetailFrame = DetailFrame
         ViewModel.RootFrame = Frame
-        DetailFrame.Navigate(GetType(BlankPage))
+        ViewModel.Navigate()
     End Sub
 
     Private Sub DoNotDeleteButton_Click(sender As Object, e As RoutedEventArgs)
@@ -29,4 +29,5 @@ Public NotInheritable Class MainPage
     Private Sub DoDeleteButton_Click(sender As Object, e As RoutedEventArgs)
         DeleteItemFlyout.Hide()
     End Sub
+
 End Class

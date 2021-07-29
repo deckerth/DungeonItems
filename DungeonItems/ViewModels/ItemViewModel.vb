@@ -2,6 +2,7 @@
 Imports DungeonItems.Model
 Imports DungeonItems.Repository
 Imports DungeonItems.Views
+Imports Microsoft.Toolkit.Uwp.UI
 Imports Windows.Storage
 
 Namespace Global.DungeonItems.ViewModels
@@ -10,9 +11,57 @@ Namespace Global.DungeonItems.ViewModels
         Inherits ItemTypeBase
 
         Public Property Model As Item
-        Public Property AllPerks As ObservableCollection(Of Perk) = PerkRepository.Current.Perks
 
-        Protected SelectedPerk As Perk = Nothing
+        Public Property AllPerks As AdvancedCollectionView
+        Public Property DeletePerkCommand As RelayCommand
+
+        Public Property AllEnchantments As AdvancedCollectionView
+        Public Property DeleteEnchantmentCommand As RelayCommand
+
+        Public Property AllRunes As AdvancedCollectionView
+        Public Property DeleteRuneCommand As RelayCommand
+
+        Private _selectedPerk As Perk = Nothing
+        Public Property SelectedPerk As Perk
+            Get
+                Return _selectedPerk
+            End Get
+            Set(value As Perk)
+                If value Is Nothing <> (_selectedPerk Is Nothing) Then
+                    SetProperty(Of Perk)(_selectedPerk, value, "SelectedPerk")
+                ElseIf value IsNot Nothing AndAlso Not value.Equals(_selectedPerk) Then
+                    SetProperty(Of Perk)(_selectedPerk, value, "SelectedPerk")
+                End If
+            End Set
+        End Property
+
+        Private _selectedEnchantment As Enchantment = Nothing
+        Public Property SelectedEnchantment As Enchantment
+            Get
+                Return _selectedEnchantment
+            End Get
+            Set(value As Enchantment)
+                If value Is Nothing <> (_selectedEnchantment Is Nothing) Then
+                    SetProperty(Of Enchantment)(_selectedEnchantment, value, "SelectedEnchantment")
+                ElseIf value IsNot Nothing AndAlso Not value.Equals(_selectedEnchantment) Then
+                    SetProperty(Of Enchantment)(_selectedEnchantment, value, "SelectedEnchantment")
+                End If
+            End Set
+        End Property
+
+        Private _selectedRune As Rune = Nothing
+        Public Property SelectedRune As Rune
+            Get
+                Return _selectedRune
+            End Get
+            Set(value As Rune)
+                If value Is Nothing <> (_selectedRune Is Nothing) Then
+                    SetProperty(Of Rune)(_selectedRune, value, "SelectedRune")
+                ElseIf value IsNot Nothing AndAlso Not value.Equals(_selectedRune) Then
+                    SetProperty(Of Rune)(_selectedRune, value, "SelectedRune")
+                End If
+            End Set
+        End Property
 
         Public Property Modified As Boolean = False
 
@@ -33,8 +82,6 @@ Namespace Global.DungeonItems.ViewModels
         Public Property DisplayImage As Image
         Public Property EditImage As Image
 
-        Public Property Perks As New ObservableCollection(Of Perk)
-
         Public Shared Function Create(model As Item) As ItemViewModel
             Select Case model.Type
                 Case Item.ItemType.Artillery
@@ -46,9 +93,23 @@ Namespace Global.DungeonItems.ViewModels
         Public Sub New(model As Item)
             Me.Model = model
             ChangeImageCommand = New RelayCommand(AddressOf ChangeImage)
-            For Each p In Me.Model.Perks
-                Perks.Add(p)
-            Next
+            DeletePerkCommand = New RelayCommand(AddressOf DeletePerk)
+            DeleteEnchantmentCommand = New RelayCommand(AddressOf DeleteEnchantment)
+            DeleteRuneCommand = New RelayCommand(AddressOf DeleteRune)
+
+            AllPerks = New AdvancedCollectionView(PerkRepository.Current.Perks) With {
+                .Filter = Function(p As Perk) Not Me.Model.HasPerk(p.Id)
+            }
+            AllPerks.SortDescriptions.Add(New SortDescription("Description", SortDirection.Ascending))
+            AllEnchantments = New AdvancedCollectionView(EnchantmentRepository.Current.Enchantments) With {
+                .Filter = Function(e As Enchantment) Not Me.Model.HasEnchantment(e.Id) AndAlso Me.Model.Type = e.Type
+            }
+            AllEnchantments.SortDescriptions.Add(New SortDescription("Name", SortDirection.Ascending))
+            AllRunes = New AdvancedCollectionView(RuneRepository.Current.Runes) With {
+                .Filter = Function(e As Rune) Not Me.Model.HasRune(e.Name)
+            }
+            AllRunes.SortDescriptions.Add(New SortDescription("Name", SortDirection.Ascending))
+
         End Sub
 
         Public ReadOnly Property Id As Guid
@@ -130,7 +191,7 @@ Namespace Global.DungeonItems.ViewModels
 
         Public Sub AddPerk(toAdd As Perk)
             Model.Perks.Add(toAdd)
-            Perks.Add(toAdd)
+            AllPerks.Refresh()
             Modified = True
         End Sub
 
@@ -149,16 +210,41 @@ Namespace Global.DungeonItems.ViewModels
         Public Sub DeletePerk()
             If SelectedPerk IsNot Nothing Then
                 Model.Perks.Remove(SelectedPerk)
-                Perks.Remove(SelectedPerk)
-                SelectedPerk = Nothing
+                Modified = True
+            End If
+        End Sub
+
+        Public Sub AddEnchantment(enchantment As Enchantment)
+            Model.Enchantments.Add(enchantment)
+            AllEnchantments.Refresh()
+            Modified = True
+        End Sub
+
+        Public Sub DeleteEnchantment()
+            If SelectedEnchantment IsNot Nothing Then
+                Model.Enchantments.Remove(SelectedEnchantment)
+                Modified = True
+            End If
+        End Sub
+
+        Public Sub AddRune(rune As Rune)
+            Model.Runes.Add(rune)
+            AllRunes.Refresh()
+            Modified = True
+        End Sub
+
+        Public Sub DeleteRune()
+            If SelectedRune IsNot Nothing Then
+                Model.Runes.Remove(SelectedRune)
                 Modified = True
             End If
         End Sub
 
         Private Async Sub ChangeImage()
-            Dim openPicker = New Pickers.FileOpenPicker()
-            openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary
-            openPicker.ViewMode = Pickers.PickerViewMode.Thumbnail
+            Dim openPicker = New Pickers.FileOpenPicker With {
+                .SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary,
+                .ViewMode = Pickers.PickerViewMode.Thumbnail
+            }
 
             ' Filter to include a sample subset of file types.
             openPicker.FileTypeFilter.Clear()

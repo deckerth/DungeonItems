@@ -6,7 +6,7 @@ Namespace Global.DungeonItems.ViewModels
     Public Class PerkViewModel
         Inherits BindableBase
 
-        Private Model As Perk
+        Public Property Model As Perk
 
         Public Property Modified As Boolean = False
 

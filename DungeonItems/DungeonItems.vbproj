@@ -132,6 +132,8 @@
     </Compile>
     <Compile Include="Commands\BaseCommand.vb" />
     <Compile Include="Commands\RelayCommand.vb" />
+    <Compile Include="Controls\StarSizeHelper.vb" />
+    <Compile Include="Controls\WrapPanel.vb" />
     <Compile Include="MainPage.xaml.vb">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -152,6 +154,7 @@
     <Compile Include="ValueConverters\BooleanOperator.vb" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
     <Compile Include="ValueConverters\ItemTypeToStringConverter.vb" />
+    <Compile Include="ValueConverters\NotNullToBooleanConverter.vb" />
     <Compile Include="ViewModels\ArtilleryViewModel.vb" />
     <Compile Include="ViewModels\BindableBase.vb" />
     <Compile Include="ViewModels\EnchantmentsViewModel.vb" />
@@ -195,6 +198,24 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\RuneA.png" />
+    <Content Include="Assets\Images\RuneC.png" />
+    <Content Include="Assets\Images\RuneI.png" />
+    <Content Include="Assets\Images\RuneO.png" />
+    <Content Include="Assets\Images\RuneP.png" />
+    <Content Include="Assets\Images\RuneR.png" />
+    <Content Include="Assets\Images\RuneS.png" />
+    <Content Include="Assets\Images\RuneT.png" />
+    <Content Include="Assets\Images\RuneU.png" />
+    <Content Include="Assets\RuneA.png" />
+    <Content Include="Assets\RuneC.png" />
+    <Content Include="Assets\RuneI.png" />
+    <Content Include="Assets\RuneO.png" />
+    <Content Include="Assets\RuneP.png" />
+    <Content Include="Assets\RuneR.png" />
+    <Content Include="Assets\RuneS.png" />
+    <Content Include="Assets\RuneT.png" />
+    <Content Include="Assets\RuneU.png" />
     <Content Include="My Project\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -212,10 +233,6 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\AcrylicBrush_19h1_themeresources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ArtilleryPage.xaml">
       <SubType>Designer</SubType>
@@ -284,15 +301,25 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
+      <Version>7.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.UI.Xaml">
+      <Version>2.6.1</Version>
+    </PackageReference>
     <PackageReference Include="Telerik.UI.for.UniversalWindowsPlatform">
       <Version>1.0.2.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Fonts\Mojang-Bold.ttf" />
+    <Content Include="Assets\Fonts\Mojang-Regular.ttf" />
     <None Include="Design\BlockDiagram.pptx" />
     <None Include="Design\DungeonItemKey.pptx" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Styles\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

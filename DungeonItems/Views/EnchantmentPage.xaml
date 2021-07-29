@@ -18,7 +18,7 @@
 
     <RelativePanel>
 
-        <TextBox x:Name="NameEditor" Text="{x:Bind ViewModel.Name,Mode=TwoWay}" FontFamily="Mojang" Width="600"
+        <TextBox x:Name="NameEditor" Text="{x:Bind ViewModel.Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontFamily="Mojang" Width="600"
                    PlaceholderText="Name"
                    FontSize="35"
                    RelativePanel.AlignTopWithPanel="True"
@@ -35,7 +35,7 @@
                    RelativePanel.RightOf="TypeLabel"
                    RelativePanel.Below="NameEditor"/>
 
-        <TextBox x:Name="DescriptionEditor" Text="{x:Bind ViewModel.Description,Mode=TwoWay}"
+        <TextBox x:Name="DescriptionEditor" Text="{x:Bind ViewModel.Description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    PlaceholderText="Beschreibung"
                    Margin="0, 10, 0, 0" Width="400" Height="200" TextWrapping="Wrap"
                    RelativePanel.AlignLeftWithPanel="True"

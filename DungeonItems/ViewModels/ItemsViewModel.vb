@@ -11,7 +11,15 @@ Namespace Global.DungeonItems.ViewModels
         Private Items As New ObservableCollection(Of ItemViewModel)
         Public Property GroupedItems As New TypeGroups
 
-        Public Shared Property Current As ItemsViewModel
+        Private Shared _current As ItemsViewModel
+        Public Shared ReadOnly Property Current As ItemsViewModel
+            Get
+                If _current Is Nothing Then
+                    _current = New ItemsViewModel
+                End If
+                Return _current
+            End Get
+        End Property
 
         Public Property AddMeleeCommand As RelayCommand
         Public Property AddArtilleryCommand As RelayCommand
@@ -73,10 +81,10 @@ Namespace Global.DungeonItems.ViewModels
             Next
         End Sub
 
-        Private Repository As New ItemRepository
+        Private Repository As ItemRepository
 
-        Public Sub New()
-            Current = Me
+        Private Sub New()
+            Repository = ItemRepository.Current
             Repository.Load()
 
             For Each i In Repository.Items
@@ -99,12 +107,16 @@ Namespace Global.DungeonItems.ViewModels
 
         End Sub
 
-        Private Sub Navigate()
-            If DetailFrame IsNot Nothing AndAlso Selected IsNot Nothing Then
-                Select Case Selected.Type
-                    Case Item.ItemType.Artillery
-                        DetailFrame.Navigate(GetType(ArtilleryPage), Selected)
-                End Select
+        Public Sub Navigate()
+            If DetailFrame IsNot Nothing Then
+                If Selected IsNot Nothing Then
+                    Select Case Selected.Type
+                        Case Item.ItemType.Artillery
+                            DetailFrame.Navigate(GetType(ArtilleryPage), Selected)
+                    End Select
+                Else
+                    DetailFrame.Navigate(GetType(BlankPage))
+                End If
             End If
         End Sub
 

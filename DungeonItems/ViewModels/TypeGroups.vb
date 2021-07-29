@@ -36,7 +36,7 @@ Namespace Global.DungeonItems.ViewModels
             End If
         End Sub
 
-        Public Sub ApplyFilter(filter As TypeFilterViewModel, collection As IList)
+        Public Sub ApplyFilter(filter As TypeFilterViewModel, collection As ICollection)
             Dim addMelees As Boolean = False
             Dim addArmors As Boolean = False
             Dim addArtilleries As Boolean = False

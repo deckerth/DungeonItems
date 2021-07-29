@@ -6,235 +6,399 @@
     xmlns:telerikGauge="using:Telerik.UI.Xaml.Controls.DataVisualization"    
     xmlns:converters="using:DungeonItems.ValueConverters"  
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:DungeonItems.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:DungeonItems.ViewModels"
     xmlns:m="using:DungeonItems.Model"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
         <ResourceDictionary>
             <converters:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+            <converters:NotNullToBooleanConverter x:Key="notNullToBooleanConverter"/>
             <DataTemplate x:Key="PerkTemplate" x:DataType="m:Perk">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Text="{x:Bind Description,Mode=OneWay}" FontFamily="Mojang"
                                        FontSize="18" Margin="10, 10, 0, 10"
                                         />
                  </Grid>
             </DataTemplate>
+            <DataTemplate x:Key="PerkChooserTemplate" x:DataType="m:Perk">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="PerkItem"  Grid.Row="0" Content="{x:Bind Description,Mode=OneWay}" FontFamily="Mojang"
+                            FontSize="18" Margin="10, 10, 0, 10"
+                            
+                            Click="PerkItem_Click"
+                            />
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="EnchantmentTemplate" x:DataType="m:Enchantment">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="{x:Bind Name,Mode=OneWay}" FontFamily="Mojang"
+                                       FontSize="18" Margin="10, 10, 0, 10"
+                                        />
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="EnchantmentChooserTemplate" x:DataType="m:Enchantment">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="EnchantmentItem"  Grid.Row="0" Content="{x:Bind Name,Mode=OneWay}" FontFamily="Mojang"
+                            FontSize="18" Margin="10, 10, 0, 10"                            
+                            Click="EnchantmentItem_Click"
+                            />
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="RuneTemplate" x:DataType="m:Rune">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Row="0" Width="50" Source="{x:Bind ImagePath}"/>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="RuneChooserTemplate" x:DataType="m:Rune">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="RuneItem"  Grid.Row="0" Click="RuneItem_Click">
+                        <Button.Content>
+                            <Image Grid.Row="0" Width="50" Source="{x:Bind ImagePath}"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Page.Resources>
 
-    <RelativePanel>
-        <TextBlock x:Name="Name" Text="{x:Bind ViewModel.Name,Mode=OneWay}" FontFamily="Mojang"
+    <Grid Width="1000">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <RelativePanel Grid.ColumnSpan="3">
+            <TextBlock x:Name="Name" Text="{x:Bind ViewModel.Name,Mode=OneWay}" FontFamily="Mojang"
                    FontSize="35"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    RelativePanel.AlignTopWithPanel="True"
                    RelativePanel.AlignLeftWithPanel="True"
                    />
-        <TextBox x:Name="NameEditor" Text="{x:Bind ViewModel.Name,Mode=TwoWay}" FontFamily="Mojang" Width="600"
+            <TextBox x:Name="NameEditor" Text="{x:Bind ViewModel.Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontFamily="Mojang" Width="600"
                    PlaceholderText="Name"
                    FontSize="35"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}"
                    RelativePanel.AlignTopWithPanel="True"
                    RelativePanel.AlignLeftWithPanel="True"
                    />
-        <Border x:Name="IsUnique" Background="#FFEB5F00" 
+            <Border x:Name="IsUnique" Background="#FFEB5F00" 
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.Below="Name"
                 Margin="0, 10, 0, 0"
                 Visibility="{x:Bind converters:BooleanOperator.OpAndNotToVis(ViewModel.IsUnique, ViewModel.IsInEdit),Mode=OneWay}">
-            <TextBlock Text="EINZIGARTIG" Foreground="Black" FontSize="20" FontWeight="Bold"
+                <TextBlock Text="EINZIGARTIG" Foreground="Black" FontSize="20" FontWeight="Bold"
                        />
-        </Border>
+            </Border>
 
-        <Border x:Name="IsNotUnique" Background="#FDACACAC" 
+            <Border x:Name="IsNotUnique" Background="#FDACACAC" 
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.Below="Name"
                 Margin="0, 10, 0, 0"
                 Visibility="{x:Bind converters:BooleanOperator.OpNotAndNotToVis(ViewModel.IsUnique, ViewModel.IsInEdit),Mode=OneWay}">
-            <TextBlock Text="GEWÖHNLICH" Foreground="Black" FontSize="20" FontWeight="Bold"
+                <TextBlock Text="GEWÖHNLICH" Foreground="Black" FontSize="20" FontWeight="Bold"
                        />
-        </Border>
+            </Border>
 
-        <ToggleSwitch x:Name="IsUniqueCheckbox" OffContent="GEWÖHNLICH" OnContent="EINZIGARTIG"
+            <ToggleSwitch x:Name="IsUniqueCheckbox" OffContent="GEWÖHNLICH" OnContent="EINZIGARTIG"
                 Margin="0, 10, 0, 0"
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.Below="NameEditor"
                 IsOn="{x:Bind ViewModel.IsUnique,Mode=TwoWay}"
                 Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}"/>
 
-        <TextBlock x:Name="Description" Text="{x:Bind ViewModel.Description,Mode=OneWay}"
+            <TextBlock x:Name="Description" Text="{x:Bind ViewModel.Description,Mode=OneWay}"
                    Margin="0, 50, 0, 0" TextWrapping="Wrap" Width="400"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="Name"/>
 
-        <TextBox x:Name="DescriptionEditor" Text="{x:Bind ViewModel.Description,Mode=TwoWay}"
+            <TextBox x:Name="DescriptionEditor" Text="{x:Bind ViewModel.Description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    PlaceholderText="Beschreibung"
                    Margin="0, 10, 0, 0" Width="400" Height="200" TextWrapping="Wrap"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="IsUniqueCheckbox"/>
-        
-        <Border x:Name="ItemImageDisplayBorder"
+
+            <Border x:Name="ItemImageDisplayBorder"
                 BorderBrush="Black"
                 RelativePanel.AlignTopWith="Description"
                 RelativePanel.RightOf="Description"
-                Margin="10, 10, 0, 0"
+                Margin="30, 10, 0, 0"
                 Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}">
-            <Image x:Name="ItemImageDisplay" Width="400" Height="400"/>
-        </Border>
+                <Image x:Name="ItemImageDisplay" Width="400" Height="400"/>
+            </Border>
 
-        <Border x:Name="ItemImageEditBorder" BorderBrush="White" BorderThickness="1"
+            <Border x:Name="ItemImageEditBorder" BorderBrush="White" BorderThickness="1"
                 RelativePanel.AlignTopWith="DescriptionEditor"
                 RelativePanel.RightOf="DescriptionEditor"
                 Margin="10, 10, 0, 0"
                 Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
-            <Image x:Name="ItemImageEdit" Width="200" Height="200"/>
-        </Border>
+                <Image x:Name="ItemImageEdit" Width="200" Height="200"/>
+            </Border>
 
-        <Button Content="Bild wählen"
+            <Button Content="Bild wählen"
                 RelativePanel.AlignHorizontalCenterWith="ItemImageEditBorder"
                 RelativePanel.Below="ItemImageEditBorder"
                 Margin="0, 10, 0, 0"
                 Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                 Command="{x:Bind ViewModel.ChangeImageCommand,Mode=OneWay}"/>
 
-        <TextBlock x:Name="StatsCaptionDisplayMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
+            <TextBlock x:Name="StatsCaptionDisplayMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    Margin="0, 10, 0, 0"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="Description"/>
 
-        <TextBlock x:Name="StatsCaptionEditMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
+            <TextBlock x:Name="StatsCaptionEditMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    Margin="0, 10, 0, 0"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="DescriptionEditor"/>
 
-        <telerikGauge:RadLinearGauge x:Name="ForceGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200"  Height="50"
-                                     Margin="0, 20, 0, 0"
+            <telerikGauge:RadLinearGauge x:Name="ForceGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200"  Height="50"
+                                     Margin="20, 20, 0, 0"
                                      Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                                      RelativePanel.AlignLeftWithPanel="True"
                                      RelativePanel.Below="StatsCaptionDisplayMode"
                                      >
-            <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Force,Mode=OneWay}" Brush="Red" Thickness="5" Margin="10"
+                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Force,Mode=OneWay}" Brush="Red" Thickness="5" Margin="10"
                                                   />
-        </telerikGauge:RadLinearGauge>
+            </telerikGauge:RadLinearGauge>
 
-        <TextBlock x:Name="ForceLabel" Text="KRAFT" FontSize="18" FontWeight="Bold" Foreground="Red"
+            <TextBlock x:Name="ForceLabel" Text="KRAFT" FontSize="18" FontWeight="Bold" Foreground="Red"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    RelativePanel.RightOf="ForceGauge"
                    RelativePanel.Below="StatsCaptionDisplayMode"/>
-        
-        <Slider x:Name="ForceSlider" Header="KRAFT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Force,Mode=TwoWay}"
+
+            <Slider x:Name="ForceSlider" Header="KRAFT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Force,Mode=TwoWay}"
                    Margin="0, 10, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="StatsCaptionEditMode"/>
 
-        <TextBox x:Name="ForceEditor" Text="{x:Bind ViewModel.Force,Mode=TwoWay}"
+            <TextBox x:Name="ForceEditor" Text="{x:Bind ViewModel.Force,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.RightOf="ForceSlider"
                    RelativePanel.AlignVerticalCenterWith="ForceSlider"/>
 
-        <telerikGauge:RadLinearGauge x:Name="SpeedGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
-                                     Margin="0, 20, 0, 0"
+            <telerikGauge:RadLinearGauge x:Name="SpeedGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
+                                     Margin="20, 20, 0, 0"
                                      Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                                      RelativePanel.AlignLeftWithPanel="True"
                                      RelativePanel.Below="ForceGauge">
-            <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Speed,Mode=OneWay}" Brush="Green" Thickness="5" Margin="10"/>
-        </telerikGauge:RadLinearGauge>
+                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Speed,Mode=OneWay}" Brush="Green" Thickness="5" Margin="10"/>
+            </telerikGauge:RadLinearGauge>
 
-        <TextBlock x:Name="SpeedLabel" Text="GESCHWINDIGKEIT" FontSize="18" FontWeight="Bold" Foreground="Green"
+            <TextBlock x:Name="SpeedLabel" Text="GESCHWINDIGKEIT" FontSize="18" FontWeight="Bold" Foreground="Green"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    RelativePanel.RightOf="SpeedGauge"
                    RelativePanel.Below="ForceGauge"/>
 
-        <Slider x:Name="SpeedSlider" Header="GESCHWINDIGKEIT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Speed,Mode=TwoWay}"
+            <Slider x:Name="SpeedSlider" Header="GESCHWINDIGKEIT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Speed,Mode=TwoWay}"
                    Margin="0, 10, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="ForceSlider"/>
 
-        <TextBox x:Name="SpeedEditor" Text="{x:Bind ViewModel.Speed,Mode=TwoWay}"
+            <TextBox x:Name="SpeedEditor" Text="{x:Bind ViewModel.Speed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.RightOf="SpeedSlider"
                    RelativePanel.AlignVerticalCenterWith="SpeedSlider"/>
 
-        <telerikGauge:RadLinearGauge x:Name="AmmoGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
-                                     Margin="0, 20, 0, 0" 
+            <telerikGauge:RadLinearGauge x:Name="AmmoGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
+                                     Margin="20, 20, 0, 0" 
                                      Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                                      RelativePanel.AlignLeftWithPanel="True"
                                      RelativePanel.Below="SpeedGauge">
-            <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Ammo,Mode=OneWay}" Brush="Blue" Thickness="5" Margin="10"/>
-        </telerikGauge:RadLinearGauge>
+                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Ammo,Mode=OneWay}" Brush="Blue" Thickness="5" Margin="10"/>
+            </telerikGauge:RadLinearGauge>
 
-        <TextBlock x:Name="AmmoLabel" Text="MUNITION" FontSize="18" FontWeight="Bold" Foreground="Blue"
+            <TextBlock x:Name="AmmoLabel" Text="MUNITION" FontSize="18" FontWeight="Bold" Foreground="Blue"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                    RelativePanel.RightOf="AmmoGauge"
                    RelativePanel.Below="SpeedGauge"/>
 
-        <Slider x:Name="AmmoSlider" Header="MUNITION" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
+            <Slider x:Name="AmmoSlider" Header="MUNITION" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
                    Margin="0, 10, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="SpeedSlider"/>
 
-        <TextBox x:Name="AmmoEditor" Text="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
+            <TextBox x:Name="AmmoEditor" Text="{x:Bind ViewModel.Ammo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.RightOf="AmmoSlider"
                    RelativePanel.AlignVerticalCenterWith="AmmoSlider"/>
-
-        <TextBlock x:Name="PerksCaptionDisplayMode" Text="Eigenschaften" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                   Margin="0, 10, 0, 0"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="AmmoGauge"/>
-
-        <TextBlock x:Name="PerksCaptionEditMode" Text="Eigenschaften" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   Margin="0, 10, 0, 0"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="AmmoSlider"/>
-
-        <SplitButton x:Name="AddPerk" 
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   Margin="0, 10, 0, 0"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="PerksCaptionEditMode">
-            Eigenschaft hinzufügen
-            <SplitButton.Flyout>
-                <Flyout Placement="Bottom">
-                    <GridView x:Name="PerkChooser"
-                        ItemTemplate="{StaticResource PerkTemplate}"
-                        ItemsSource="{x:Bind ViewModel.AllPerks}" ItemClick="PerkChooser_ItemClick"      
-                        IsItemClickEnabled="True"
+        </RelativePanel>
+        <Grid Grid.Row="1" Margin="0,0,30,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Eigenschaften" Style="{StaticResource NavigationViewItemHeaderTextStyle}" Margin="0, 20, 0, 0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                <muxc:SplitButton x:Name="AddPerk"
+                   Margin="0, 10, 0, 0">
+                    Hinzufügen
+                    <muxc:SplitButton.Flyout>
+                        <Flyout x:Name="AddPerkFlyout" Placement="TopEdgeAlignedLeft">
+                            <ListView x:Name="PerkChooser" Height="500" Width="500"
+                                      ItemTemplate="{StaticResource PerkChooserTemplate}"
+                                      ItemsSource="{x:Bind ViewModel.AllPerks}" SelectionMode="None"
+                                      ItemsPanel="{StaticResource HorizontalItemsPanel}"
                         />
-                </Flyout>
-            </SplitButton.Flyout>
-        </SplitButton>
+                        </Flyout>
+                    </muxc:SplitButton.Flyout>
+                </muxc:SplitButton>
 
-        <GridView x:Name="PerkGridViewEditMode"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                <Button x:Name="DeletePerk"
+                      Margin="10, 10, 0, 0"
+                      Command="{x:Bind ViewModel.DeletePerkCommand}"
+                      Content="Löschen"
+                      IsEnabled="{x:Bind ViewModel.SelectedPerk, Converter={StaticResource notNullToBooleanConverter},Mode=OneWay}"/>
+            </StackPanel>
+
+            <ListView Grid.Row="2" 
+                   IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
                    Margin="0, 10, 0, 0"
-                   Background="{ThemeResource AccentAcrylicBackgroundFillColorBaseBrush}"
                    ItemTemplate="{StaticResource PerkTemplate}"
-                   ItemsSource="{x:Bind ViewModel.Perks}"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="AddPerk">
-        </GridView>
+                   ItemsSource="{x:Bind ViewModel.Model.Perks}"
+                   SelectedItem="{x:Bind ViewModel.SelectedPerk,Mode=TwoWay}"
+                   ItemsPanel="{StaticResource HorizontalItemsPanel}">
+            </ListView>
+        </Grid>
 
-    </RelativePanel>
+        <Grid Grid.Row="1" Grid.Column="1" Margin="0,0,30,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Verzauberungen" Style="{StaticResource NavigationViewItemHeaderTextStyle}" Margin="0, 20, 0, 0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                <muxc:SplitButton x:Name="AddEnchantments"
+                   Margin="0, 10, 0, 0">
+                    Hinzufügen
+                    <muxc:SplitButton.Flyout>
+                        <Flyout x:Name="AddEnchantmentFlyout" Placement="TopEdgeAlignedLeft">
+                            <ListView x:Name="EnchantmentsChooser" Height="500" Width="500"
+                                      ItemTemplate="{StaticResource EnchantmentChooserTemplate}"
+                                      ItemsSource="{x:Bind ViewModel.AllEnchantments,Mode=OneWay}" SelectionMode="None"
+                                      ItemsPanel="{StaticResource HorizontalItemsPanel}"
+                        />
+                        </Flyout>
+                    </muxc:SplitButton.Flyout>
+                </muxc:SplitButton>
+
+                <Button x:Name="DeleteEnchantment"
+                      Margin="10, 10, 0, 0"
+                      Command="{x:Bind ViewModel.DeleteEnchantmentCommand}"
+                      Content="Löschen"
+                      IsEnabled="{x:Bind ViewModel.SelectedEnchantment, Converter={StaticResource notNullToBooleanConverter},Mode=OneWay}"/>
+            </StackPanel>
+
+            <ListView Grid.Row="2" 
+                   IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   ItemTemplate="{StaticResource EnchantmentTemplate}"
+                   ItemsSource="{x:Bind ViewModel.Model.Enchantments}"
+                   SelectedItem="{x:Bind ViewModel.SelectedEnchantment,Mode=TwoWay}"
+                   ItemsPanel="{StaticResource HorizontalItemsPanel}">
+            </ListView>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="2" Margin="0,0,30,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Runen" Style="{StaticResource NavigationViewItemHeaderTextStyle}" Margin="0, 20, 0, 0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                <muxc:SplitButton x:Name="AddRunes"
+                   Margin="0, 10, 0, 0">
+                    Hinzufügen
+                    <muxc:SplitButton.Flyout>
+                        <Flyout Placement="TopEdgeAlignedLeft">
+                            <ListView x:Name="RunesChooser" Height="200" Width="500"
+                                      ItemTemplate="{StaticResource RuneChooserTemplate}"
+                                      ItemsSource="{x:Bind ViewModel.AllRunes,Mode=OneWay}" SelectionMode="None"
+                                      ItemsPanel="{StaticResource HorizontalItemsPanel}"
+                        />
+                        </Flyout>
+                    </muxc:SplitButton.Flyout>
+                </muxc:SplitButton>
+
+                <Button x:Name="DeleteRune"
+                      Margin="10, 10, 0, 0"
+                      Command="{x:Bind ViewModel.DeleteRuneCommand}"
+                      Content="Löschen"
+                      IsEnabled="{x:Bind ViewModel.SelectedRune, Converter={StaticResource notNullToBooleanConverter},Mode=OneWay}"/>
+            </StackPanel>
+
+            <ListView Grid.Row="2" 
+                   IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
+                   Margin="0, 10, 0, 0"
+                   ItemTemplate="{StaticResource RuneTemplate}"
+                   ItemsSource="{x:Bind ViewModel.Model.Runes}"
+                   SelectedItem="{x:Bind ViewModel.SelectedRune,Mode=TwoWay}"
+                   ItemsPanel="{StaticResource HorizontalItemsPanel}">
+            </ListView>
+        </Grid>
+    </Grid>
 </Page>

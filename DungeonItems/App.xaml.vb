@@ -5,9 +5,6 @@
 NotInheritable Class App
     Inherits Application
 
-
-    Private ViewModel As New ItemsViewModel
-
     ''' <summary>
     ''' Wird aufgerufen, wenn die Anwendung durch den Endbenutzer normal gestartet wird. Weitere Einstiegspunkte
     ''' werden verwendet, wenn die Anwendung zum Öffnen einer bestimmten Datei, zum Anzeigen
@@ -38,7 +35,7 @@ NotInheritable Class App
                 ' Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
                 ' und die neue Seite konfigurieren, indem die erforderlichen Informationen als Navigationsparameter
                 ' übergeben werden
-                rootFrame.Navigate(GetType(MainPage), ViewModel)
+                rootFrame.Navigate(GetType(MainPage), ItemsViewModel.Current)
             End If
 
             ' Sicherstellen, dass das aktuelle Fenster aktiv ist
@@ -64,7 +61,7 @@ NotInheritable Class App
     ''' <param name="e">Details zur Anhalteanforderung.</param>
     Private Sub OnSuspending(sender As Object, e As SuspendingEventArgs) Handles Me.Suspending
         Dim deferral As SuspendingDeferral = e.SuspendingOperation.GetDeferral()
-        ViewModel.Save()
+        ItemsViewModel.Current.Save()
         deferral.Complete()
     End Sub
 

@@ -9,6 +9,7 @@ Namespace Global.DungeonItems.ViewModels
         Inherits BindableBase
 
         Public Property Perks As New ObservableCollection(Of PerkViewModel)
+        Public Property DescriptionTextBox As TextBox
 
         Private Shared _current As PerksViewModel
         Public Shared ReadOnly Property Current As PerksViewModel
@@ -28,9 +29,9 @@ Namespace Global.DungeonItems.ViewModels
         Public Property DetailFrame As Frame
         Public Property RootFrame As Frame
 
-        Private Sub SaveSelected()
-            If _selected IsNot Nothing AndAlso _selected.Modified Then
-                _selected.Save(Repository)
+        Private Sub SaveSelected(item As PerkViewModel)
+            If item IsNot Nothing AndAlso item.Modified Then
+                item.Save(Repository)
             End If
         End Sub
 
@@ -44,7 +45,7 @@ Namespace Global.DungeonItems.ViewModels
                     Return
                 End If
                 If value Is Nothing OrElse Not value.Equals(_selected) Then
-                    SaveSelected()
+                    SaveSelected(_selected)
                     _selected = value
                     If _selected IsNot Nothing Then
                         Navigate()
@@ -72,8 +73,7 @@ Namespace Global.DungeonItems.ViewModels
             Next
         End Sub
 
-        Private Repository As New PerkRepository
-
+        Private Repository = PerkRepository.Current
 
         Public Sub New()
             _current = Me
@@ -106,12 +106,12 @@ Namespace Global.DungeonItems.ViewModels
         End Sub
 
         Private Sub Home()
-            SaveSelected()
+            SaveSelected(_selected)
             RootFrame.Navigate(GetType(MainPage), ItemsViewModel.Current)
         End Sub
 
         Private Sub NavigateToEchantments()
-            SaveSelected()
+            SaveSelected(_selected)
             RootFrame.Navigate(GetType(EnchantmentsEditorPage), EnchantmentsViewModel.Current)
         End Sub
 

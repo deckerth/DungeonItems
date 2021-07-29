@@ -96,6 +96,10 @@ Namespace Global.DungeonItems.Repository
             AddPerk(newValue)
         End Sub
 
+        Private Sub New()
+            _current = Me
+        End Sub
+
     End Class
 
 End Namespace
