@@ -162,11 +162,15 @@
     <Compile Include="ViewModels\ItemsViewModel.vb" />
     <Compile Include="ViewModels\ItemTypeBase.vb" />
     <Compile Include="ViewModels\ItemViewModel.vb" />
+    <Compile Include="ViewModels\MeleeViewModel.vb" />
     <Compile Include="ViewModels\PerksViewModel.vb" />
     <Compile Include="ViewModels\PerkViewModel.vb" />
     <Compile Include="ViewModels\TypeFilterViewModel.vb" />
     <Compile Include="ViewModels\TypeGroup.vb" />
     <Compile Include="ViewModels\TypeGroups.vb" />
+    <Compile Include="Views\ArmorPage.xaml.vb">
+      <DependentUpon>ArmorPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ArtilleryPage.xaml.vb">
       <DependentUpon>ArtilleryPage.xaml</DependentUpon>
     </Compile>
@@ -181,6 +185,9 @@
     </Compile>
     <Compile Include="Views\EnchantmentsEditorPage.xaml.vb">
       <DependentUpon>EnchantmentsEditorPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeleePage.xaml.vb">
+      <DependentUpon>MeleePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PerkEditDialog.xaml.vb">
       <DependentUpon>PerkEditDialog.xaml</DependentUpon>
@@ -234,6 +241,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ArmorPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ArtilleryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -251,6 +262,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EnchantmentsEditorPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MeleePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

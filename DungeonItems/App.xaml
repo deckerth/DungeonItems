@@ -19,6 +19,7 @@
                               HorizontalSpacing="5" 
                               />
                     </ItemsPanelTemplate>
+   
                 </ResourceDictionary>
 
             </muxc:XamlControlsResources.MergedDictionaries>

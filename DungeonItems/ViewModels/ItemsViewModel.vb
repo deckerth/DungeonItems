@@ -91,16 +91,20 @@ Namespace Global.DungeonItems.ViewModels
                 Select Case i.Type
                     Case Item.ItemType.Artillery
                         Me.Items.Add(New ArtilleryViewModel(i))
+                    Case Item.ItemType.Melee
+                        Me.Items.Add(New MeleeViewModel(i))
+                    Case Item.ItemType.Armor
+                        Me.Items.Add(New ItemViewModel(i))
                 End Select
             Next
 
             AddHandler TypeFilter.UpdateFilter, AddressOf HandleUpdateFilter
             HandleUpdateFilter()
 
-            AddMeleeCommand = New RelayCommand(AddressOf doAddMelee)
-            AddArtilleryCommand = New RelayCommand(AddressOf doAddArtillery)
-            AddArmorCommand = New RelayCommand(AddressOf doAddArmor)
-            DeleteCommand = New RelayCommand(AddressOf doDelete)
+            AddMeleeCommand = New RelayCommand(AddressOf DoAddMelee)
+            AddArtilleryCommand = New RelayCommand(AddressOf DoAddArtillery)
+            AddArmorCommand = New RelayCommand(AddressOf DoAddArmor)
+            DeleteCommand = New RelayCommand(AddressOf DoDelete)
             HomeCommand = New RelayCommand(AddressOf displayHomePage)
             NavigateToPerksCommand = New RelayCommand(AddressOf NavigateToPerksPage)
             NavigateToEnchantmentsCommand = New RelayCommand(AddressOf NavigateToEnchantmentsPage)
@@ -113,6 +117,10 @@ Namespace Global.DungeonItems.ViewModels
                     Select Case Selected.Type
                         Case Item.ItemType.Artillery
                             DetailFrame.Navigate(GetType(ArtilleryPage), Selected)
+                        Case Item.ItemType.Melee
+                            DetailFrame.Navigate(GetType(MeleePage), Selected)
+                        Case Item.ItemType.Armor
+                            DetailFrame.Navigate(GetType(ArmorPage), Selected)
                     End Select
                 Else
                     DetailFrame.Navigate(GetType(BlankPage))
@@ -120,19 +128,19 @@ Namespace Global.DungeonItems.ViewModels
             End If
         End Sub
 
-        Private Sub doAddMelee()
-            doAdd(Item.ItemType.Melee)
+        Private Sub DoAddMelee()
+            DoAdd(Item.ItemType.Melee)
         End Sub
 
-        Private Sub doAddArtillery()
-            doAdd(Item.ItemType.Artillery)
+        Private Sub DoAddArtillery()
+            DoAdd(Item.ItemType.Artillery)
         End Sub
 
-        Private Sub doAddArmor()
-            doAdd(Item.ItemType.Armor)
+        Private Sub DoAddArmor()
+            DoAdd(Item.ItemType.Armor)
         End Sub
 
-        Private Sub doAdd(type As Item.ItemType)
+        Private Sub DoAdd(type As Item.ItemType)
             Dim newItem = ItemFactory.CreateItem(type)
             Dim itemVM = ItemViewModel.Create(newItem)
             itemVM.Modified = True
@@ -142,7 +150,7 @@ Namespace Global.DungeonItems.ViewModels
             IsInEdit = True
         End Sub
 
-        Private Sub doDelete()
+        Private Sub DoDelete()
             If Selected IsNot Nothing Then
                 Selected.Delete(Repository)
                 Items.Remove(Selected)

@@ -1,19 +1,19 @@
 ﻿<Page
-    x:Class="DungeonItems.Views.ArtilleryPage"
+    x:Class="DungeonItems.Views.MeleePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DungeonItems.Views"
-    xmlns:telerikGauge="using:Telerik.UI.Xaml.Controls.DataVisualization"    
-    xmlns:converters="using:DungeonItems.ValueConverters"  
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:controls="using:DungeonItems.Controls"
-    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:telerikGauge="using:Telerik.UI.Xaml.Controls.DataVisualization"    
+    xmlns:converters="using:DungeonItems.ValueConverters"  
+    xmlns:controls="using:DungeonItems.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:vm="using:DungeonItems.ViewModels"
     xmlns:m="using:DungeonItems.Model"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
-    mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
@@ -31,7 +31,7 @@
                     <TextBlock Grid.Row="0" Text="{x:Bind Description,Mode=OneWay}" FontFamily="Mojang"
                                        FontSize="18" Margin="10, 10, 0, 10"
                                         />
-                 </Grid>
+                </Grid>
             </DataTemplate>
             <DataTemplate x:Key="PerkChooserTemplate" x:DataType="m:Perk">
                 <Grid>
@@ -258,31 +258,31 @@
                    RelativePanel.RightOf="SpeedSlider"
                    RelativePanel.AlignVerticalCenterWith="SpeedSlider"/>
 
-            <telerikGauge:RadLinearGauge x:Name="AmmoGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
+            <telerikGauge:RadLinearGauge x:Name="RangeGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
                                      Margin="20, 20, 0, 0" 
                                      Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
                                      RelativePanel.AlignLeftWithPanel="True"
                                      RelativePanel.Below="SpeedGauge">
-                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Ammo,Mode=OneWay}" Brush="Blue" Thickness="5" Margin="10"/>
+                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Range,Mode=OneWay}" Brush="Blue" Thickness="5" Margin="10"/>
             </telerikGauge:RadLinearGauge>
 
-            <TextBlock x:Name="AmmoLabel" Text="MUNITION" FontSize="18" FontWeight="Bold" Foreground="Blue"
+            <TextBlock x:Name="RangeLabel" Text="REICHWEITE" FontSize="18" FontWeight="Bold" Foreground="Blue"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                   RelativePanel.RightOf="AmmoGauge"
+                   RelativePanel.RightOf="RangeGauge"
                    RelativePanel.Below="SpeedGauge"/>
 
-            <Slider x:Name="AmmoSlider" Header="MUNITION" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
+            <Slider x:Name="RangeSlider" Header="REICHWEITE" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Range,Mode=TwoWay}"
                    Margin="0, 10, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.Below="SpeedSlider"/>
 
-            <TextBox x:Name="AmmoEditor" Text="{x:Bind ViewModel.Ammo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="RangeEditor" Text="{x:Bind ViewModel.Range,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    Margin="30, 30, 0, 0"
                    Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.RightOf="AmmoSlider"
-                   RelativePanel.AlignVerticalCenterWith="AmmoSlider"/>
+                   RelativePanel.RightOf="RangeSlider"
+                   RelativePanel.AlignVerticalCenterWith="RangeSlider"/>
         </RelativePanel>
         <Grid Grid.Row="1" Margin="0,0,30,0">
             <Grid.RowDefinitions>
@@ -361,7 +361,7 @@
                    ItemsPanel="{StaticResource HorizontalItemsPanel}">
             </ListView>
         </Grid>
-        
+
         <Grid Grid.Row="1" Grid.Column="2" Margin="0,0,30,0"
               Visibility="{x:Bind ViewModel.IsUnique,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
             <Grid.RowDefinitions>

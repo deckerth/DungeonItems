@@ -86,6 +86,10 @@ Namespace Global.DungeonItems.ViewModels
             Select Case model.Type
                 Case Item.ItemType.Artillery
                     Return New ArtilleryViewModel(model)
+                Case Item.ItemType.Melee
+                    Return New MeleeViewModel(model)
+                Case Item.ItemType.Armor
+                    Return New ItemViewModel(model)
             End Select
             Return Nothing
         End Function

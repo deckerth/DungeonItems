@@ -1,19 +1,20 @@
 ﻿<Page
-    x:Class="DungeonItems.Views.ArtilleryPage"
+    x:Class="DungeonItems.Views.ArmorPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DungeonItems.Views"
-    xmlns:telerikGauge="using:Telerik.UI.Xaml.Controls.DataVisualization"    
-    xmlns:converters="using:DungeonItems.ValueConverters"  
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:controls="using:DungeonItems.Controls"
-    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:telerikGauge="using:Telerik.UI.Xaml.Controls.DataVisualization"    
+    xmlns:converters="using:DungeonItems.ValueConverters"  
+    xmlns:controls="using:DungeonItems.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:vm="using:DungeonItems.ViewModels"
     xmlns:m="using:DungeonItems.Model"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
-    mc:Ignorable="d"
+
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
@@ -31,7 +32,7 @@
                     <TextBlock Grid.Row="0" Text="{x:Bind Description,Mode=OneWay}" FontFamily="Mojang"
                                        FontSize="18" Margin="10, 10, 0, 10"
                                         />
-                 </Grid>
+                </Grid>
             </DataTemplate>
             <DataTemplate x:Key="PerkChooserTemplate" x:DataType="m:Perk">
                 <Grid>
@@ -192,97 +193,6 @@
                 Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
                 Command="{x:Bind ViewModel.ChangeImageCommand,Mode=OneWay}"/>
 
-            <TextBlock x:Name="StatsCaptionDisplayMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                   Margin="0, 10, 0, 0"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="Description"/>
-
-            <TextBlock x:Name="StatsCaptionEditMode" Text="Statistik" Style="{StaticResource NavigationViewItemHeaderTextStyle}"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   Margin="0, 10, 0, 0"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="DescriptionEditor"/>
-
-            <telerikGauge:RadLinearGauge x:Name="ForceGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200"  Height="50"
-                                     Margin="20, 20, 0, 0"
-                                     Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                                     RelativePanel.AlignLeftWithPanel="True"
-                                     RelativePanel.Below="StatsCaptionDisplayMode"
-                                     >
-                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Force,Mode=OneWay}" Brush="Red" Thickness="5" Margin="10"
-                                                  />
-            </telerikGauge:RadLinearGauge>
-
-            <TextBlock x:Name="ForceLabel" Text="KRAFT" FontSize="18" FontWeight="Bold" Foreground="Red"
-                   Margin="30, 30, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                   RelativePanel.RightOf="ForceGauge"
-                   RelativePanel.Below="StatsCaptionDisplayMode"/>
-
-            <Slider x:Name="ForceSlider" Header="KRAFT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Force,Mode=TwoWay}"
-                   Margin="0, 10, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="StatsCaptionEditMode"/>
-
-            <TextBox x:Name="ForceEditor" Text="{x:Bind ViewModel.Force,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                   Margin="30, 30, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.RightOf="ForceSlider"
-                   RelativePanel.AlignVerticalCenterWith="ForceSlider"/>
-
-            <telerikGauge:RadLinearGauge x:Name="SpeedGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
-                                     Margin="20, 20, 0, 0"
-                                     Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                                     RelativePanel.AlignLeftWithPanel="True"
-                                     RelativePanel.Below="ForceGauge">
-                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Speed,Mode=OneWay}" Brush="Green" Thickness="5" Margin="10"/>
-            </telerikGauge:RadLinearGauge>
-
-            <TextBlock x:Name="SpeedLabel" Text="GESCHWINDIGKEIT" FontSize="18" FontWeight="Bold" Foreground="Green"
-                   Margin="30, 30, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                   RelativePanel.RightOf="SpeedGauge"
-                   RelativePanel.Below="ForceGauge"/>
-
-            <Slider x:Name="SpeedSlider" Header="GESCHWINDIGKEIT" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Speed,Mode=TwoWay}"
-                   Margin="0, 10, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="ForceSlider"/>
-
-            <TextBox x:Name="SpeedEditor" Text="{x:Bind ViewModel.Speed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                   Margin="30, 30, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.RightOf="SpeedSlider"
-                   RelativePanel.AlignVerticalCenterWith="SpeedSlider"/>
-
-            <telerikGauge:RadLinearGauge x:Name="AmmoGauge" LabelStep="50" TickStep="20" MaxValue="100" Width="200" Height="50"
-                                     Margin="20, 20, 0, 0" 
-                                     Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                                     RelativePanel.AlignLeftWithPanel="True"
-                                     RelativePanel.Below="SpeedGauge">
-                <telerikGauge:LinearBarGaugeIndicator Value="{x:Bind ViewModel.Ammo,Mode=OneWay}" Brush="Blue" Thickness="5" Margin="10"/>
-            </telerikGauge:RadLinearGauge>
-
-            <TextBlock x:Name="AmmoLabel" Text="MUNITION" FontSize="18" FontWeight="Bold" Foreground="Blue"
-                   Margin="30, 30, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter},ConverterParameter=True, Mode=OneWay}"
-                   RelativePanel.RightOf="AmmoGauge"
-                   RelativePanel.Below="SpeedGauge"/>
-
-            <Slider x:Name="AmmoSlider" Header="MUNITION" Width="200" Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="Outside" Value="{x:Bind ViewModel.Ammo,Mode=TwoWay}"
-                   Margin="0, 10, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.Below="SpeedSlider"/>
-
-            <TextBox x:Name="AmmoEditor" Text="{x:Bind ViewModel.Ammo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                   Margin="30, 30, 0, 0"
-                   Visibility="{x:Bind ViewModel.IsInEdit,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
-                   RelativePanel.RightOf="AmmoSlider"
-                   RelativePanel.AlignVerticalCenterWith="AmmoSlider"/>
         </RelativePanel>
         <Grid Grid.Row="1" Margin="0,0,30,0">
             <Grid.RowDefinitions>
@@ -361,7 +271,7 @@
                    ItemsPanel="{StaticResource HorizontalItemsPanel}">
             </ListView>
         </Grid>
-        
+
         <Grid Grid.Row="1" Grid.Column="2" Margin="0,0,30,0"
               Visibility="{x:Bind ViewModel.IsUnique,Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
             <Grid.RowDefinitions>
