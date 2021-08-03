@@ -148,9 +148,11 @@
     <Compile Include="Model\Rune.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Repository\EnchantmentRepository.vb" />
+    <Compile Include="Repository\ImportExportService.vb" />
     <Compile Include="Repository\ItemRepository.vb" />
     <Compile Include="Repository\PerkRepository.vb" />
     <Compile Include="Repository\RuneRepository.vb" />
+    <Compile Include="Repository\UpdateCounters.vb" />
     <Compile Include="ValueConverters\BooleanOperator.vb" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
     <Compile Include="ValueConverters\ItemTypeToStringConverter.vb" />
@@ -185,6 +187,9 @@
     </Compile>
     <Compile Include="Views\EnchantmentsEditorPage.xaml.vb">
       <DependentUpon>EnchantmentsEditorPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImportResultDialog.xaml.vb">
+      <DependentUpon>ImportResultDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MeleePage.xaml.vb">
       <DependentUpon>MeleePage.xaml</DependentUpon>
@@ -265,6 +270,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ImportResultDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MeleePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -313,6 +322,9 @@
     <Import Include="Windows.UI.Xaml.Navigation" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="EPPlus">
+      <Version>5.7.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>

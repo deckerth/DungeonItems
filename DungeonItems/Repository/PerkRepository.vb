@@ -1,4 +1,5 @@
 ﻿Imports DungeonItems.Model
+Imports DungeonItems.ViewModels
 Imports Windows.Storage
 
 Namespace Global.DungeonItems.Repository
@@ -94,6 +95,20 @@ Namespace Global.DungeonItems.Repository
         Public Sub UpdatePerk(newValue As Perk)
             DeletePerk(newValue)
             AddPerk(newValue)
+        End Sub
+
+        Public Sub Upsert(p As Perk)
+            Dim current = GetPerk(p.Id)
+            If current Is Nothing Then
+                AddPerk(p)
+            Else
+                Dim vm = New PerkViewModel(current) With {
+                    .Description = p.Description
+                }
+                If vm.Modified Then
+                    UpdatePerk(p)
+                End If
+            End If
         End Sub
 
         Private Sub New()

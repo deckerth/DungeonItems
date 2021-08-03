@@ -1,10 +1,17 @@
 ﻿Imports DungeonItems.Model
 Imports DungeonItems.Model.Item
+Imports DungeonItems.ViewModels
 Imports Windows.Storage
 
 Namespace Global.DungeonItems.Repository
 
     Public Class ItemRepository
+
+        Public Enum UpsertResult
+            added
+            updated
+            skipped
+        End Enum
 
         Private Shared _current As ItemRepository
         Public Shared ReadOnly Property Current As ItemRepository
@@ -17,6 +24,10 @@ Namespace Global.DungeonItems.Repository
         End Property
 
         Public Property Items As New ObservableCollection(Of Item)
+
+        Public Function GetItem(id As Guid) As Item
+            Return Items.FirstOrDefault(Function(other) other.Id = id)
+        End Function
 
         Private ContentLoaded As Boolean
 
@@ -119,6 +130,12 @@ Namespace Global.DungeonItems.Repository
             End If
         End Sub
 
+        Public Sub Clear()
+            Dim localSettings = ApplicationData.Current.LocalSettings
+            localSettings.DeleteContainer("ItemsList")
+            Items.Clear()
+        End Sub
+
         Public Sub AddItem(toAdd As Item)
 
             If Not ContentLoaded Then
@@ -199,6 +216,55 @@ Namespace Global.DungeonItems.Repository
             DeleteItem(newValue)
             AddItem(newValue)
         End Sub
+
+        Public Function Upsert(i As Item) As UpsertResult
+            Dim result As UpsertResult
+            Load()
+
+            Dim current = GetItem(i.Id)
+
+            If current Is Nothing Then
+                AddItem(i)
+                result = UpsertResult.added
+            Else
+                Dim vm = ItemViewModel.Create(current)
+                vm.Image = i.Image
+                vm.IsUnique = i.IsUnique
+                vm.mruToken = i.mruToken
+                vm.Name = i.Name
+                vm.Description = i.Description
+                For Each p In i.Perks
+                    If Not current.HasPerk(p.Id) Then
+                        vm.AddPerk(p)
+                    End If
+                Next
+                For Each p In current.Perks
+                    If Not i.HasPerk(p.Id) Then
+                        vm.SelectedPerk = p
+                        vm.DeletePerk()
+                    End If
+                Next
+                For Each e In i.Enchantments
+                    If Not current.HasEnchantment(e.Id) Then
+                        vm.AddEnchantment(e)
+                    End If
+                Next
+                For Each e In current.Enchantments
+                    If Not i.HasEnchantment(e.Id) Then
+                        vm.SelectedEnchantment = e
+                        vm.DeleteEnchantment()
+                    End If
+                Next
+                If vm.Modified Then
+                    UpdateItem(i)
+                    result = UpsertResult.updated
+                Else
+                    result = UpsertResult.skipped
+                End If
+            End If
+
+            Return result
+        End Function
 
     End Class
 

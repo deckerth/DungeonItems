@@ -133,7 +133,9 @@ Namespace Global.DungeonItems.ViewModels
                 Return Model.Name
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Name) Then
+                If value Is Nothing Then
+                    Model.Name = Nothing
+                ElseIf Not value.Equals(Model.Name) Then
                     Model.Name = value
                     OnPropertyChanged("Name")
                     Modified = True
@@ -146,11 +148,13 @@ Namespace Global.DungeonItems.ViewModels
                 Return Model.Description
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Description) Then
+                If value Is Nothing Then
+                    Model.Description = Nothing
+                ElseIf Not value.Equals(Model.Description) Then
                     Model.Description = value
-                    OnPropertyChanged("Description")
-                    Modified = True
-                End If
+                        OnPropertyChanged("Description")
+                        Modified = True
+                    End If
             End Set
         End Property
 
@@ -159,11 +163,13 @@ Namespace Global.DungeonItems.ViewModels
                 Return Model.Image
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Image) Then
+                If value Is Nothing Then
+                    Model.Image = Nothing
+                ElseIf Not value.Equals(Model.Image) Then
                     Model.Image = value
-                    OnPropertyChanged("Image")
-                    Modified = True
-                End If
+                        OnPropertyChanged("Image")
+                        Modified = True
+                    End If
             End Set
         End Property
 
@@ -172,11 +178,13 @@ Namespace Global.DungeonItems.ViewModels
                 Return Model.mruToken
             End Get
             Set(value As String)
-                If Not value.Equals(Model.mruToken) Then
+                If value Is Nothing Then
+                    Model.mruToken = Nothing
+                ElseIf Not value.Equals(Model.mruToken) Then
                     Model.mruToken = value
-                    OnPropertyChanged("mruToken")
-                    Modified = True
-                End If
+                        OnPropertyChanged("mruToken")
+                        Modified = True
+                    End If
             End Set
         End Property
 

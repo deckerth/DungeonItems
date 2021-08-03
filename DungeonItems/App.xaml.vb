@@ -1,4 +1,5 @@
 ﻿Imports DungeonItems.ViewModels
+Imports OfficeOpenXml
 ''' <summary>
 ''' Stellt das anwendungsspezifische Verhalten bereit, um die Standardanwendungsklasse zu ergänzen.
 ''' </summary>
@@ -13,6 +14,8 @@ NotInheritable Class App
     ''' <param name="e">Details über Startanforderung und -prozess.</param>
     Protected Overrides Sub OnLaunched(e As Windows.ApplicationModel.Activation.LaunchActivatedEventArgs)
         Dim rootFrame As Frame = TryCast(Window.Current.Content, Frame)
+
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial
 
         ' App-Initialisierung nicht wiederholen, wenn das Fenster bereits Inhalte enthält.
         ' Nur sicherstellen, dass das Fenster aktiv ist.

@@ -76,6 +76,9 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Eigenschaften" Command="{x:Bind ViewModel.NavigateToPerksCommand}"/>
                 <AppBarButton Label="Verzauberungen" Command="{x:Bind ViewModel.NavigateToEnchantmentsCommand}"/>
+                <AppBarSeparator/>
+                <AppBarButton Label="Exportieren" Command="{x:Bind ViewModel.ExportCommand}"/>
+                <AppBarButton Label="Importieren" Command="{x:Bind ViewModel.ImportCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <AppBarButton Grid.Row="1" Icon="Filter">

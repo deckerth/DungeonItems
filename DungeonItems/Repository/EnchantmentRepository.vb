@@ -1,4 +1,5 @@
 ﻿Imports DungeonItems.Model
+Imports DungeonItems.ViewModels
 Imports Windows.Storage
 
 Namespace Global.DungeonItems.Repository
@@ -109,6 +110,23 @@ Namespace Global.DungeonItems.Repository
         Public Sub UpdateEnchantment(newValue As Enchantment)
             DeleteEnchantment(newValue)
             AddEnchantment(newValue)
+        End Sub
+
+        Public Sub Upsert(e As Enchantment)
+            Dim current = GetEnchantment(e.Id)
+            If current Is Nothing Then
+                AddEnchantment(e)
+            Else
+                Dim vm = New EnchantmentViewModel(current) With {
+                    .Description = e.Description,
+                    .Image = e.Image,
+                    .mruToken = e.mruToken,
+                    .Name = e.Name
+                }
+                If vm.Modified Then
+                    UpdateEnchantment(e)
+                End If
+            End If
         End Sub
 
         Private Sub New()

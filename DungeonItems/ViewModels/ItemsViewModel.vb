@@ -2,6 +2,10 @@
 Imports DungeonItems.Model
 Imports DungeonItems.Repository
 Imports DungeonItems.Views
+Imports Windows.Storage
+Imports Windows.Storage.Pickers
+Imports Windows.Storage.Provider
+Imports Windows.UI.Popups
 
 Namespace Global.DungeonItems.ViewModels
 
@@ -28,6 +32,8 @@ Namespace Global.DungeonItems.ViewModels
         Public Property HomeCommand As RelayCommand
         Public Property NavigateToPerksCommand As RelayCommand
         Public Property NavigateToEnchantmentsCommand As RelayCommand
+        Public Property ExportCommand As RelayCommand
+        Public Property ImportCommand As RelayCommand
 
         Public Property DetailFrame As Frame
         Public Property RootFrame As Frame
@@ -108,6 +114,10 @@ Namespace Global.DungeonItems.ViewModels
             HomeCommand = New RelayCommand(AddressOf displayHomePage)
             NavigateToPerksCommand = New RelayCommand(AddressOf NavigateToPerksPage)
             NavigateToEnchantmentsCommand = New RelayCommand(AddressOf NavigateToEnchantmentsPage)
+#Disable Warning BC42359 ' Die von dieser Async-Funktion zurückgegebene Aufgabe wird verworfen, und alle darin enthaltenen Ausnahmen werden ignoriert.
+            ExportCommand = New RelayCommand(AddressOf OnExportDB)
+            ImportCommand = New RelayCommand(AddressOf OnImportDB)
+#Enable Warning BC42359 ' Die von dieser Async-Funktion zurückgegebene Aufgabe wird verworfen, und alle darin enthaltenen Ausnahmen werden ignoriert.
 
         End Sub
 
@@ -177,6 +187,74 @@ Namespace Global.DungeonItems.ViewModels
         Private Sub HandleUpdateFilter()
             GroupedItems.ApplyFilter(TypeFilter, Items)
         End Sub
+
+        Public Async Function OnExportDB() As Task
+
+            Dim savepicker As New FileSavePicker With {
+            .SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+        }
+
+            ' Dropdown of file types the user can save the file as
+            savepicker.FileTypeChoices.Add("Excel Workbook", New List(Of String) From {".xlsx"})
+            ' Default file name if the user does Not type one in Or select a file to replace
+            savepicker.SuggestedFileName = "MyDungeonItems"
+
+            Dim File As StorageFile = Await savepicker.PickSaveFileAsync()
+            If File IsNot Nothing Then
+                Using stream = Await File.OpenStreamForWriteAsync()
+                    stream.SetLength(0)
+                    ' Prevent updates to the remote version of the file until we finish making changes And call CompleteUpdatesAsync.
+                    CachedFileManager.DeferUpdates(File)
+                    Dim service = New ImportExportService
+                    service.Export(stream)
+
+                    Dim status As FileUpdateStatus = Await CachedFileManager.CompleteUpdatesAsync(File)
+                    If status = FileUpdateStatus.Complete Then
+                        Await New MessageDialog("Die Datenbank wurde erfolgreich exportiert.").ShowAsync()
+                    Else
+                        Await New MessageDialog("Die Datenbank konnte nicht exportiert werden.").ShowAsync()
+                    End If
+                End Using
+            End If
+        End Function
+
+        Private ImportDecisionDialogResult As ImportExportService.ImportOptions
+        Private Cancelled As Boolean
+
+        Private Async Function ImportDialog() As Task(Of Boolean)
+
+            Dim dialog = New MessageDialog("Möchten Sie die importierten Medien der Sammlung hinzufügen, oder möchten Sie die Sammlung ersetzen?")
+
+            ' Add commands and set their callbacks 
+            dialog.Commands.Add(New UICommand("Hinzufügen", Sub(command) ImportDecisionDialogResult = ImportExportService.ImportOptions.Add))
+            dialog.Commands.Add(New UICommand("Ersetzen", Sub(command) ImportDecisionDialogResult = ImportExportService.ImportOptions.Replace))
+            dialog.Commands.Add(New UICommand("Abbrechen", Sub(command) Cancelled = True))
+
+            Cancelled = False
+            Await dialog.ShowAsync()
+            Return Not Cancelled
+        End Function
+
+        Public Async Function OnImportDB() As Task
+
+            If Await ImportDialog() Then
+                Dim openPicker As FileOpenPicker = New FileOpenPicker()
+                openPicker.ViewMode = PickerViewMode.Thumbnail
+                openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+                openPicker.FileTypeFilter.Add(".xlsx")
+                Dim File As StorageFile = Await openPicker.PickSingleFileAsync()
+                Dim Counters As UpdateCounters
+                Dim service = New ImportExportService
+                If File IsNot Nothing Then
+                    'Await Progress.SetIndeterministicAsync()
+                    Counters = service.Import(Await File.OpenStreamForReadAsync(), ImportDecisionDialogResult)
+                    'Await Progress.HideAsync()
+                    Dim dialog = New ImportResultDialog(Counters)
+                    Await dialog.ShowAsync()
+                End If
+            End If
+
+        End Function
 
     End Class
 
